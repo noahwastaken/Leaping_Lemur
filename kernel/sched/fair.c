@@ -1099,9 +1099,15 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
 			se = second;
 	}
 
+	/*
+	 * Prefer last buddy, try to return the CPU to a preempted task.
+	 */
 	if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1)
 		se = cfs_rq->last;
 
+	/*
+	 * Someone really wants this to run. If it's not unfair, run it.
+	 */
 	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1)
 		se = cfs_rq->next;
 
@@ -1648,7 +1654,8 @@ static void check_enqueue_throttle(struct cfs_rq *cfs_rq)
 		throttle_cfs_rq(cfs_rq);
 }
 
-static void check_cfs_rq_runtime(struct cfs_rq *cfs_rq)
+/* conditionally throttle active cfs_rq's from put_prev_entity() */
+static bool check_cfs_rq_runtime(struct cfs_rq *cfs_rq)
 {
 	if (!cfs_bandwidth_used())
 		return false;
@@ -1656,6 +1663,10 @@ static void check_cfs_rq_runtime(struct cfs_rq *cfs_rq)
 	if (likely(!cfs_rq->runtime_enabled || cfs_rq->runtime_remaining > 0))
 		return false;
 
+	/*
+	 * it's possible for a throttled entity to be forced into a running
+	 * state (e.g. set_curr_task), in this case we're finished.
+	 */
 	if (cfs_rq_throttled(cfs_rq))
 		return true;
 
