@@ -325,9 +325,13 @@ struct tcp_sock {
 	u8	nonagle     : 4,
 		thin_lto    : 1,
 		thin_dupack : 1,
-		unused      : 2;
-
-	u32	srtt;		
+		repair      : 1,
+		unused      : 1;
+	u8	repair_queue;
+	u8	do_early_retrans:1;/* Enable RFC5827 early-retransmit  */
+ 
+ /* RTT measurement */
+	u32	srtt;		/* smoothed round trip time << 3	*/
 	u32	mdev;		
 	u32	mdev_max;	
 	u32	rttvar;		

@@ -41,6 +41,7 @@ int sysctl_tcp_thin_dupack __read_mostly;
 
 int sysctl_tcp_moderate_rcvbuf __read_mostly = 1;
 int sysctl_tcp_abc __read_mostly;
+int sysctl_tcp_early_retrans __read_mostly = 2;
 
 #define FLAG_DATA		0x01 
 #define FLAG_WIN_UPDATE		0x02 
@@ -651,6 +652,7 @@ static void tcp_init_metrics(struct sock *sk)
 	if (dst_metric(dst, RTAX_REORDERING) &&
 	    tp->reordering != dst_metric(dst, RTAX_REORDERING)) {
 		tcp_disable_fack(tp);
+		tcp_disable_early_retrans(tp);
 		tp->reordering = dst_metric(dst, RTAX_REORDERING);
 	}
 
@@ -708,6 +710,9 @@ static void tcp_update_reordering(struct sock *sk, const int metric,
 #endif
 		tcp_disable_fack(tp);
 	}
+
+	if (metric > 0)
+		tcp_disable_early_retrans(tp);
 }
 
 static void tcp_verify_retransmit_hint(struct tcp_sock *tp, struct sk_buff *skb)
@@ -1824,6 +1829,16 @@ static int tcp_time_to_recover(struct sock *sk)
 	if ((tp->thin_dupack || sysctl_tcp_thin_dupack) &&
 	    tcp_stream_is_thin(tp) && tcp_dupack_heuristics(tp) > 1 &&
 	    tcp_is_sack(tp) && !tcp_send_head(sk))
+		return 1;
+
+	/* Trick#6: TCP early retransmit, per RFC5827.  To avoid spurious
+	 * retransmissions due to small network reorderings, we implement
+	 * Mitigation A.3 in the RFC and delay the retransmission for a short
+	 * interval if appropriate.
+	 */
+	if (tp->do_early_retrans && !tp->retrans_out && tp->sacked_out &&
+	    (tp->packets_out == (tp->sacked_out + 1) && tp->packets_out < 4) &&
+	    !tcp_may_send_now(sk))
 		return 1;
 
 	return 0;
