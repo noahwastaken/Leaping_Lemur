@@ -34,7 +34,7 @@
 static DEFINE_PER_CPU(struct hrtimer, menu_hrtimer);
 static DEFINE_PER_CPU(int, hrtimer_status);
 /* menu hrtimer mode */
-enum {MENU_HRTIMER_STOP, MENU_HRTIMER_REPEAT, MENU_HRTIMER_GENERAL};
+enum {MENU_HRTIMER_STOP, MENU_HRTIMER_REPEAT};
 
 
 /*
@@ -104,11 +104,13 @@ static u64 div_round64(u64 dividend, u32 divisor)
 	return div_u64(dividend + (divisor / 2), divisor);
 }
 
+/* Cancel the hrtimer if it is not triggered yet */
 void menu_hrtimer_cancel(void)
 {
 	int cpu = smp_processor_id();
 	struct hrtimer *hrtmr = &per_cpu(menu_hrtimer, cpu);
 
+	/* The timer is still not time out*/
 	if (per_cpu(hrtimer_status, cpu)) {
 		hrtimer_cancel(hrtmr);
 		per_cpu(hrtimer_status, cpu) = MENU_HRTIMER_STOP;
@@ -116,6 +118,7 @@ void menu_hrtimer_cancel(void)
 }
 EXPORT_SYMBOL_GPL(menu_hrtimer_cancel);
 
+/* Call back for hrtimer is triggered */
 static enum hrtimer_restart menu_hrtimer_notify(struct hrtimer *hrtimer)
 {
 	int cpu = smp_processor_id();
@@ -135,41 +138,36 @@ static enum hrtimer_restart menu_hrtimer_notify(struct hrtimer *hrtimer)
 	return HRTIMER_NORESTART;
 }
 
-static u32 get_typical_interval(struct menu_device *data)
+/*
+ * Try detecting repeating patterns by keeping track of the last 8
+ * intervals, and checking if the standard deviation of that set
+ * of points is below a threshold. If it is... then use the
+ * average of these 8 points as the estimated value.
+ */
+static int detect_repeating_patterns(struct menu_device *data)
 {
-	int i = 0, divisor = 0;
-	uint64_t max = 0, avg = 0, stddev = 0;
-	int64_t thresh = LLONG_MAX; /* Discard outliers above this value. */
-	unsigned int ret = 0; 
-	
-again: 
+	int i;
+	uint64_t avg = 0;
+	uint64_t stddev = 0; /* contains the square of the std deviation */
+	int ret = 0;
 
 	/* first calculate average and standard deviation of the past */
-	max = avg = divisor = stddev = 0;
-	for (i = 0; i < INTERVALS; i++) {
-		int64_t value = data->intervals[i];
-		if (value <= thresh) {
-			avg += value;
-			divisor++;
-			if (value > max)
-				max = value;
-		}
-	}
-	do_div(avg, divisor);
+	for (i = 0; i < INTERVALS; i++)
+		avg += data->intervals[i];
+	avg = avg / INTERVALS;
 
-	for (i = 0; i < INTERVALS; i++) {
-		int64_t value = data->intervals[i];
-		if (value <= thresh) {
-			int64_t diff = value - avg;
-			stddev += diff * diff;
- 		}
-	}
-	do_div(stddev, divisor);
-	stddev = int_sqrt(stddev); 
+	
+	if (avg > data->expected_us)
+		return 0;
+
+	for (i = 0; i < INTERVALS; i++)
+		stddev += (data->intervals[i] - avg) *
+			  (data->intervals[i] - avg);
+
+	stddev = stddev / INTERVALS;
 
 
-	if (((avg > stddev * 6) && (divisor * 4 >= INTERVALS * 3))
-	              || stddev <= 20) { 
+	if (avg && stddev < STDDEV_THRESH) {
 		data->predicted_us = avg;
 		ret = 1;
 	return ret;
@@ -224,7 +222,7 @@ static int menu_select(struct cpuidle_driver *drv, struct cpuidle_device *dev)
 	data->predicted_us = div_round64(data->expected_us * data->correction_factor[data->bucket],
 					 RESOLUTION * DECAY);
 
-	repeat = get_typical_interval(data);
+	repeat = detect_repeating_patterns(data);
 
 	if (data->expected_us > 5 &&
 		dev->states_usage[CPUIDLE_DRIVER_STATE_START].disable == 0)
