@@ -2,6 +2,7 @@
 #define _LINUX_ELEVATOR_H
 
 #include <linux/percpu.h>
+#include <linux/hashtable.h>
 
 #ifdef CONFIG_BLOCK
 
@@ -98,14 +99,19 @@ struct elevator_type
 	struct list_head list;
 };
 
+#define ELV_HASH_BITS 6
+
+/*
+ * each queue has an elevator_queue associated with it
+ */
 struct elevator_queue
 {
 	struct elevator_type *type;
 	void *elevator_data;
 	struct kobject kobj;
 	struct mutex sysfs_lock;
-	struct hlist_head *hash;
 	unsigned int registered:1;
+	DECLARE_HASHTABLE(hash, ELV_HASH_BITS);
 };
 
 extern void elv_dispatch_sort(struct request_queue *, struct request *);
