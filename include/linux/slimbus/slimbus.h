@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -426,7 +426,19 @@ extern int slim_reconfigure_now(struct slim_device *sb);
 extern int slim_ctrl_clk_pause(struct slim_controller *ctrl, bool wakeup,
 		u8 restart);
 
+/*
+ * slim_driver_register: Client driver registration with slimbus
+ * @drv:Client driver to be associated with client-device.
+ * This API will register the client driver with the slimbus
+ * It is called from the driver's module-init function.
+ */
 extern int slim_driver_register(struct slim_driver *drv);
+
+/*
+ * slim_driver_unregister: Undo effects of slim_driver_register
+ * @drv: Client driver to be unregistered
+ */
+extern void slim_driver_unregister(struct slim_driver *drv);
 
 extern int slim_add_numbered_controller(struct slim_controller *ctrl);
 
