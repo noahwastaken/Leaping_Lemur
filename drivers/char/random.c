@@ -347,8 +347,6 @@ void add_device_randomness(const void *buf, unsigned int size)
 }
 EXPORT_SYMBOL(add_device_randomness);
 
-static struct timer_rand_state input_timer_state;
-
 static void add_timer_randomness(struct timer_rand_state *state, unsigned num)
 {
 	struct {
