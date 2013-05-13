@@ -1493,12 +1493,6 @@ static struct i2c_board_info msm_i2c_mhl_sii9234_info[] =
 static struct msm_bus_vectors hsic_init_vectors[] = {
        {
                .src = MSM_BUS_MASTER_SPS,
-               .dst = MSM_BUS_SLAVE_EBI_CH0,
-               .ab = 0,
-               .ib = 0,
-       },
-       {
-               .src = MSM_BUS_MASTER_SPS,
                .dst = MSM_BUS_SLAVE_SPS,
                .ab = 0,
                .ib = 0,
@@ -1508,15 +1502,9 @@ static struct msm_bus_vectors hsic_init_vectors[] = {
 static struct msm_bus_vectors hsic_max_vectors[] = {
        {
                .src = MSM_BUS_MASTER_SPS,
-               .dst = MSM_BUS_SLAVE_EBI_CH0,
-               .ab = 60000000,		/* At least 480Mbps on bus. */
-	       .ib = 960000000,		/* MAX bursts rate */      
-       },
-       {
-               .src = MSM_BUS_MASTER_SPS,
                .dst = MSM_BUS_SLAVE_SPS,
                .ab = 0,
-               .ib = 512000000, /*vote for 64Mhz dfab clk rate*/
+               .ib = 256000000, /*vote for 32Mhz dfab clk rate*/
        },
 };
 
