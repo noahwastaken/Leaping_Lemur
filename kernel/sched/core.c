@@ -5127,21 +5127,20 @@ static int build_sched_domains(const struct cpumask *cpu_map,
 		goto error;
 
 	
-	 /* Set up domains for cpus specified by the cpu_map. */
-        for_each_cpu(i, cpu_map) {
-                struct sched_domain_topology_level *tl;
+	for_each_cpu(i, cpu_map) {
+		struct sched_domain_topology_level *tl;
 
-                sd = NULL;
-                for_each_sd_topology(tl) {
-                        sd = build_sched_domain(tl, &d, cpu_map, attr, sd, i);
-                        if (tl == sched_domain_topology)
-                                *per_cpu_ptr(d.sd, i) = sd;
-                        if (tl->flags & SDTL_OVERLAP || sched_feat(FORCE_SD_OVERLAP))
-                                sd->flags |= SD_OVERLAP;
-                        if (cpumask_equal(cpu_map, sched_domain_span(sd)))
-                                break;
-                }
-        }
+		sd = NULL;
+		for (tl = sched_domain_topology; tl->init; tl++) {
+			sd = build_sched_domain(tl, &d, cpu_map, attr, sd, i);
+			if (!*per_cpu_ptr(d.sd, i))
+				*per_cpu_ptr(d.sd, i) = sd;
+			if (tl->flags & SDTL_OVERLAP || sched_feat(FORCE_SD_OVERLAP))
+				sd->flags |= SD_OVERLAP;
+			if (cpumask_equal(cpu_map, sched_domain_span(sd)))
+				break;
+		}
+	}
 
 	
 	for_each_cpu(i, cpu_map) {
