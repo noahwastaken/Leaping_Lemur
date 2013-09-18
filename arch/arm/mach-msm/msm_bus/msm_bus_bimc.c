@@ -1762,7 +1762,7 @@ static void msm_bus_bimc_update_bw(struct msm_bus_inode_info *hop,
 	struct msm_bus_bimc_info *binfo;
 	struct msm_bus_bimc_qos_bw qbw;
 	int i;
-	long int bw;
+	int64_t bw;
 	int ports = info->node_info->num_mports;
 	struct msm_bus_bimc_commit *sel_cd =
 		(struct msm_bus_bimc_commit *)sel_cdata;
@@ -1791,12 +1791,12 @@ static void msm_bus_bimc_update_bw(struct msm_bus_inode_info *hop,
 			info->node_info->mas_hw_id;
 		qbw.bw = sel_cd->mas[info->node_info->masterp[i]].bw;
 		qbw.ws = info->node_info->ws;
-		
-		qbw.thl = (90 * bw) / 100;
-		
+		/* Threshold low = 90% of bw */
+		qbw.thl = div_s64((90 * bw), 100);
+		/* Threshold medium = bw */
 		qbw.thm = bw;
-		
-		qbw.thh = (110 * bw) / 100;
+		/* Threshold high = 10% more than bw */
+		qbw.thh = div_s64((110 * bw), 100);
 		MSM_BUS_DBG("BIMC: Update mas_bw for ID: %d -> %ld\n",
 			info->node_info->priv_id,
 			sel_cd->mas[info->node_info->masterp[i]].bw);
