@@ -1082,23 +1082,30 @@ static void soc_dpcm_be_dai_startup_unwind(struct snd_soc_pcm_runtime *fe, int s
 	}
 }
 
+/* Startup all new BE */
 static int soc_dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
 {
 	struct snd_soc_dpcm_params *dpcm_params;
 	int err, count = 0;
 
-	
+	/* only startup BE DAIs that are either sinks or sources to this FE DAI */
 	list_for_each_entry(dpcm_params, &fe->dpcm[stream].be_clients, list_be) {
 
 		struct snd_soc_pcm_runtime *be = dpcm_params->be;
 		struct snd_pcm_substream *be_substream =
 			snd_soc_dpcm_get_substream(be, stream);
 
-		
+		if (!be_substream) {
+			dev_err(be->dev, "ASoC: no backend %s stream\n",
+				stream ? "capture" : "playback");
+			continue;
+		}
+
+		/* is this op for this BE ? */
 		if (!snd_soc_dpcm_be_can_update(fe, be, stream))
 			continue;
 
-		
+		/* first time the dpcm_params is open ? */
 		if (be->dpcm[stream].users == MAX_BE_USERS)
 			dev_err(be->dev, "too many users %s at open - state %d\n",
 				stream ? "capture" : "playback", be->dpcm[stream].state);
@@ -1110,8 +1117,9 @@ static int soc_dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_CLOSE))
 			continue;
 
-		dev_dbg(be->dev, "dpcm: open BE %s\n", be->dai_link->name);
-		pr_info("%s:open BE %s\n", __func__,be->dai_link->stream_name);
+		dev_dbg(be->dev, "ASoC: open %s BE %s\n",
+			stream ? "capture" : "playback", be->dai_link->name);
+
 		be_substream->runtime = be->dpcm[stream].runtime;
 		err = soc_pcm_open(be_substream);
 		if (err < 0) {
