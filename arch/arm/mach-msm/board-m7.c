@@ -3905,13 +3905,25 @@ static struct platform_device msm_tsens_device = {
 	.id = -1,
 };
 
+#ifdef CONFIG_BRICKED_THERMAL
 static struct msm_thermal_data msm_thermal_pdata = {
 	.sensor_id = 0,
-/*	.poll_ms = 1000,
-	.limit_temp = 60,
-	.temp_hysteresis = 10,
-	.limit_freq = 918000,*/
+	.poll_ms = 400,
+	.shutdown_temp = 83,
+
+	.allowed_max_high = 79,
+	.allowed_max_low = 74,
+	.allowed_max_freq = 300000,
+
+	.allowed_mid_high = 76,
+	.allowed_mid_low = 71,
+	.allowed_mid_freq = 960000,
+
+	.allowed_low_high = 74,
+	.allowed_low_low = 68,
+	.allowed_low_freq = 1728000,
 };
+#endif
 
 static int __init check_dq_setup(char *str)
 {
@@ -5453,7 +5465,11 @@ static void __init m7_common_init(void)
 	int rc = 0;
 	struct kobject *properties_kobj;
 
+#ifdef CONFIG_BRICKED_THERMAL
 	msm_thermal_init(&msm_thermal_pdata);
+#else
+ 	msm_thermal_device_init();
+#endif
 
 	if (socinfo_init() < 0)
 		pr_err("socinfo_init() failed!\n");

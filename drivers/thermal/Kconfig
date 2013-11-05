@@ -99,3 +99,13 @@ config THERMAL_MIN_TEMP_PROTECT
          This enable the protection under critical low temperature enviroment.
          Device would auto shutdown when thermal sensor senses the temperature
          is lower than the critical low temperature.
+
+config BRICKED_THERMAL
+	tristate "Bricked thermal monitor based on pre core-control msm_thermal"
+	depends on THERMAL_TSENS8960 || THERMAL_TSENS8974
+	depends on CPU_FREQ_MSM
+	default n
+	help
+	  This enables thermal monitoring capability in the kernel.
+	  Monitors TSENS temperature and limits the max frequency of the cores.
+	  This replaces the qcom msm_thermal when defined!
