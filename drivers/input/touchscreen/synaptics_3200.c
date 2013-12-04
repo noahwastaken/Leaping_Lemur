@@ -218,6 +218,7 @@ static int s2w_switch = 1;
 static int l2m_switch = 1;
 static int l2w_switch = 0;
 static int dt2w_switch = 1;
+static int dt2s_switch = 1;
 static int pocket_detect = 1;
 static int s2w_hist[2] = {0, 0};
 static unsigned long s2w_time[3] = {0, 0, 0};
@@ -2050,6 +2051,24 @@ static ssize_t synaptics_doubletap2wake_dump(struct device *dev, struct device_a
 static DEVICE_ATTR(doubletap2wake, (S_IWUSR|S_IRUGO),
 	synaptics_doubletap2wake_show, synaptics_doubletap2wake_dump); 
 
+static ssize_t synaptics_doubletap2sleep_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+	count += sprintf(buf, "%d\n", dt2s_switch);
+	return count;
+}
+
+static ssize_t synaptics_doubletap2sleep_dump(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+{
+	if (buf[0] >= '0' && buf[0] <= '1' && buf[1] == '\n')
+	if (dt2s_switch != buf[0] - '0') {
+		dt2s_switch = buf[0] - '0';
+	}
+	return count;
+}
+
+static DEVICE_ATTR(doubletap2sleep, (S_IWUSR|S_IRUGO),
+	synaptics_doubletap2sleep_show, synaptics_doubletap2sleep_dump); 
 
 static ssize_t synaptics_logo2menu_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
@@ -2261,7 +2280,12 @@ static int synaptics_touch_sysfs_init(void)
 	if (ret) {
 		printk(KERN_ERR "%s: sysfs_create_file failed\n", __func__);
 		return ret;
-	} 
+	}
+	ret = sysfs_create_file(android_touch_kobj, &dev_attr_doubletap2sleep.attr);
+	if (ret) {
+		printk(KERN_ERR "%s: sysfs_create_file failed\n", __func__);
+		return ret;
+	}
 	ret = sysfs_create_file(android_touch_kobj, &dev_attr_logo2menu.attr);
 	if (ret) {
 		printk(KERN_ERR "%s: sysfs_create_file failed\n", __func__);
@@ -2335,6 +2359,7 @@ static void synaptics_touch_sysfs_remove(void)
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 	sysfs_remove_file(android_touch_kobj, &dev_attr_sweep2wake.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_doubletap2wake.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_doubletap2sleep.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_logo2menu.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_logo2wake.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_pocket_detect.attr);
@@ -2557,20 +2582,19 @@ static void dt2w_func(int x, int y) {
 
 //	printk(KERN_INFO "x=%d y=%d\n", dt2w_x[0], dt2w_y[0]);
 
-        if (scr_suspended) {
-		if (
-		y < 2880
-		&& x > 150 && x < 1470
-		&& ((dt2w_time[0]-dt2w_time[1]) > DT2W_TIMEOUT_MIN)
-		&& ((dt2w_time[0]-dt2w_time[1]) < DT2W_TIMEOUT_MAX)
-		&& (abs(delta_x) < DT2W_DELTA)
-		&& (abs(delta_y) < DT2W_DELTA)
-		) {
-                       // printk("[DT2W]: OFF->ON\n");
-			dt2w_time[0] = 0;
-			dt2w_time[1] = 0;
-                        sweep2wake_pwrtrigger();
-			wakesleep_vib = 1;
+        if ((dt2w_switch && scr_suspended && y > 1400 && x > 150 && x < 1470) ||
+		(dt2s_switch && !scr_suspended && y < 105)) {
+
+		if (((dt2w_time[0]-dt2w_time[1]) > DT2W_TIMEOUT_MIN)
+			&& ((dt2w_time[0]-dt2w_time[1]) < DT2W_TIMEOUT_MAX)
+			&& (abs(delta_x) < DT2W_DELTA)
+			&& (abs(delta_y) < DT2W_DELTA)) {
+
+	                        //printk("[DT2W]: ON->OFF\n");
+				dt2w_time[0] = 0;
+				dt2w_time[1] = 0;
+        	                sweep2wake_pwrtrigger();
+				wakesleep_vib = 1;
 		}
 	}
         return;
@@ -2682,7 +2706,7 @@ static void synaptics_ts_finger_func(struct synaptics_ts_data *ts)
 						finger_data[i][0] = ts->layout[1];
 					if(ts->width_factor && ts->height_factor){
 						printk(KERN_INFO
-							"[TP] Screen:F[%02d]:Up, X=%d, Y=%d, W=%d, Z=%d\n",
+							"[TP] XX Screen:F[%02d]:Up, X=%d, Y=%d, W=%d, Z=%d\n",
 							i+1, (x_pos[i]*ts->width_factor)>>SHIFT_BITS,
 							(y_pos[i]*ts->height_factor)>>SHIFT_BITS,
 							finger_data[i][2], finger_data[i][3]);
@@ -2739,7 +2763,7 @@ static void synaptics_ts_finger_func(struct synaptics_ts_data *ts)
 		}
 
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
-     if ((((ts->finger_count > 0)?1:0) == 0) && scr_suspended == true && dt2w_switch == 1) { 
+     if ((((ts->finger_count > 0)?1:0) == 0) && (dt2w_switch == 1 || dt2s_switch == 1)) { 
 		dt2w_func(last_touch_position_x, last_touch_position_y);
      }
 
