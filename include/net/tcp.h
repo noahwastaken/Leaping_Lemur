@@ -200,6 +200,7 @@ extern int sysctl_tcp_thin_dupack;
 extern int sysctl_tcp_challenge_ack_limit;
 extern int sysctl_tcp_limit_output_bytes;
 extern int sysctl_tcp_early_retrans;
+extern int sysctl_tcp_autocorking;
 
 #ifdef CONFIG_HTC_TCP_SYN_FAIL
 extern __be32 sysctl_tcp_syn_fail;
