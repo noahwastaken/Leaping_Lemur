@@ -59,10 +59,12 @@
 #define READDONE_IDX_FLAGS 6
 #define READDONE_IDX_NUMFRAMES 7
 #define READDONE_IDX_ID 8
+#define FRAME_NUM             (8)
 #ifdef CONFIG_DEBUG_FS
 #define OUT_BUFFER_SIZE 56
 #define IN_BUFFER_SIZE 24
 #endif
+
 static DEFINE_MUTEX(session_lock);
 
 static struct audio_client *session[SESSION_MAX+1];
@@ -527,6 +529,8 @@ int q6asm_audio_client_buf_alloc(unsigned int dir,
 			pr_debug("%s: buffer already allocated\n", __func__);
 			return 0;
 		}
+		if (bufcnt != FRAME_NUM)
+			goto fail;
 		mutex_lock(&ac->cmd_lock);
 		buf = kzalloc(((sizeof(struct audio_buffer))*bufcnt),
 				GFP_KERNEL);
