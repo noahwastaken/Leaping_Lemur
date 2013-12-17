@@ -39,7 +39,6 @@
 	 ((_pa) & 0xFF))
 
 extern uint32_t max_gpu;
-extern int graphics_boost;
 
 enum kgsl_iommu_context_id {
 	KGSL_IOMMU_CONTEXT_USER = 0,
