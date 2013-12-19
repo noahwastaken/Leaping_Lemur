@@ -47,12 +47,12 @@ static int orig_up_threshold;
 #define MAX_FREQUENCY_UP_THRESHOLD		(100)
 #define MIN_FREQUENCY_DOWN_DIFFERENTIAL		(1)
 #define DBS_INPUT_EVENT_MIN_FREQ		(1134000)
-#define DEF_UI_DYNAMIC_SAMPLING_RATE		(30000)
+#define DEF_UI_DYNAMIC_SAMPLING_RATE		(25000)
 #define DBS_UI_SAMPLING_MIN_TIMEOUT		(30)
 #define DBS_UI_SAMPLING_MAX_TIMEOUT		(1000)
 #define DBS_UI_SAMPLING_TIMEOUT			(80)
 #define DBS_SWITCH_MODE_TIMEOUT			(1000)
-#define DEF_GBOOST_THRESHOLD			(49)
+
 #define MIN_SAMPLING_RATE_RATIO			(2)
 
 static unsigned int min_sampling_rate;
@@ -152,7 +152,6 @@ static struct dbs_tuners {
 	unsigned int ui_timeout;
 	unsigned int enable_boost_cpu;
 	int gboost;
-	unsigned int gboost_threshold;
 } dbs_tuners_ins = {
 	.up_threshold_multi_core = DEF_FREQUENCY_UP_THRESHOLD,
 	.up_threshold = DEF_FREQUENCY_UP_THRESHOLD,
@@ -169,7 +168,6 @@ static struct dbs_tuners {
 	.ui_timeout = DBS_UI_SAMPLING_TIMEOUT,
 	.enable_boost_cpu = 1,
 	.gboost = 1,
-	.gboost_threshold = DEF_GBOOST_THRESHOLD,
 };
 
 bool is_elementalx_locked(void)
@@ -368,7 +366,6 @@ show_one(up_threshold_any_cpu_load, up_threshold_any_cpu_load);
 show_one(sync_freq, sync_freq);
 show_one(enable_boost_cpu, enable_boost_cpu);
 show_one(gboost, gboost);
-show_one(gboost_threshold, gboost_threshold);
 
 static ssize_t show_powersave_bias
 (struct kobject *kobj, struct attribute *attr, char *buf)
@@ -827,21 +824,6 @@ static ssize_t store_gboost(struct kobject *a, struct attribute *b,
 	return count;
 }
 
-static ssize_t store_gboost_threshold(struct kobject *a, struct attribute *b,
-				  const char *buf, size_t count)
-{
-	unsigned int input;
-	int ret;
-	ret = sscanf(buf, "%u", &input);
-
-	if (ret != 1 || input > MAX_FREQUENCY_UP_THRESHOLD ||
-			input < MIN_FREQUENCY_UP_THRESHOLD) {
-		return -EINVAL;
-	}
-	dbs_tuners_ins.gboost_threshold = input;
-	return count;
-}
-
 define_one_global_rw(sampling_rate);
 define_one_global_rw(io_is_busy);
 define_one_global_rw(up_threshold);
@@ -859,7 +841,6 @@ define_one_global_rw(ui_sampling_rate);
 define_one_global_rw(ui_timeout);
 define_one_global_rw(enable_boost_cpu);
 define_one_global_rw(gboost);
-define_one_global_rw(gboost_threshold);
 
 static struct attribute *dbs_attributes[] = {
 	&sampling_rate_min.attr,
@@ -880,7 +861,6 @@ static struct attribute *dbs_attributes[] = {
 	&ui_timeout.attr,
 	&enable_boost_cpu.attr,
 	&gboost.attr,
-	&gboost_threshold.attr,
 	NULL
 };
 
@@ -1262,11 +1242,11 @@ if (dbs_tuners_ins.gboost) {
 
 //graphics boost
 	if (graphics_boost == 0 && dbs_tuners_ins.gboost) {
-		if (dbs_tuners_ins.up_threshold != dbs_tuners_ins.gboost_threshold)
+		if (dbs_tuners_ins.up_threshold != 49)
 			orig_up_threshold = dbs_tuners_ins.up_threshold;
-		dbs_tuners_ins.up_threshold = dbs_tuners_ins.gboost_threshold;
+		dbs_tuners_ins.up_threshold = 49;
 	} else {
-		if (dbs_tuners_ins.up_threshold == dbs_tuners_ins.gboost_threshold)
+		if (dbs_tuners_ins.up_threshold == 49)
 			dbs_tuners_ins.up_threshold = orig_up_threshold;
 	}
 
@@ -1597,7 +1577,10 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 		this_dbs_info->rate_mult = 1;
 		elementalx_powersave_bias_init_cpu(cpu);
 		set_two_phase_freq(1134000);
-
+	        set_input_event_min_freq_by_cpu(1, 1134000);
+        	set_input_event_min_freq_by_cpu(2, 1026000);
+        	set_input_event_min_freq_by_cpu(3, 810000);
+        	set_input_event_min_freq_by_cpu(4, 810000);
 		if (dbs_enable == 1) {
 			unsigned int latency;
 
