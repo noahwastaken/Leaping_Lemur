@@ -30,8 +30,8 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/cpufreq_interactive.h>
 
+//gboost
 #include <mach/kgsl.h>
-
 static int old_up_threshold;
 
 #define DEF_SAMPLING_RATE				(50000)
@@ -124,7 +124,7 @@ extern int has_boost_cpu_func;
 static	struct cpufreq_frequency_table *tbl = NULL;
 static unsigned int *tblmap[TABLE_SIZE] __read_mostly;
 static unsigned int tbl_select[4];
-static unsigned int up_threshold_level[2] __read_mostly = {95, 85};
+static unsigned int up_threshold_level[2] = {95, 85};
 static int input_event_counter = 0;
 struct timer_list freq_mode_timer;
 
@@ -147,9 +147,7 @@ static struct dbs_tuners {
 	unsigned int sampling_down_factor;
 	int          powersave_bias;
 	unsigned int io_is_busy;
-#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND_2_PHASE
 	unsigned int two_phase_freq;
-#endif
 	unsigned int origin_sampling_rate;
 	unsigned int ui_sampling_rate;
 	unsigned int ui_timeout;
@@ -166,9 +164,7 @@ static struct dbs_tuners {
 	.powersave_bias = 0,
 	.sync_freq = 0,
 	.optimal_freq = 0,
-#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND_2_PHASE
 	.two_phase_freq = 0,
-#endif
 	.ui_sampling_rate = DEF_UI_DYNAMIC_SAMPLING_RATE,
 	.ui_timeout = DBS_UI_SAMPLING_TIMEOUT,
 	.enable_boost_cpu = 1,
@@ -437,7 +433,6 @@ static ssize_t store_ui_timeout(struct kobject *a, struct attribute *b,
 	return count;
 }
 
-#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND_2_PHASE
 static int two_phase_freq_array[NR_CPUS] = {[0 ... NR_CPUS-1] = 0} ;
 
 static ssize_t show_two_phase_freq
@@ -474,8 +469,6 @@ static ssize_t store_two_phase_freq(struct kobject *a, struct attribute *b,
 
 	return count;
 }
-
-#endif
 
 static int input_event_min_freq_array[NR_CPUS] = {[0 ... NR_CPUS-1] = DBS_INPUT_EVENT_MIN_FREQ} ;
 
@@ -843,9 +836,7 @@ define_one_global_rw(up_threshold_multi_core);
 define_one_global_rw(optimal_freq);
 define_one_global_rw(up_threshold_any_cpu_load);
 define_one_global_rw(sync_freq);
-#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND_2_PHASE
 define_one_global_rw(two_phase_freq);
-#endif
 define_one_global_rw(input_event_min_freq);
 define_one_global_rw(ui_sampling_rate);
 define_one_global_rw(ui_timeout);
@@ -865,9 +856,7 @@ static struct attribute *dbs_attributes[] = {
 	&optimal_freq.attr,
 	&up_threshold_any_cpu_load.attr,
 	&sync_freq.attr,
-#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND_2_PHASE
 	&two_phase_freq.attr,
-#endif
 	&input_event_min_freq.attr,
 	&ui_sampling_rate.attr,
 	&ui_timeout.attr,
@@ -1026,7 +1015,6 @@ static void dbs_freq_increase(struct cpufreq_policy *p, unsigned load, unsigned 
 	trace_cpufreq_interactive_up (p->cpu, freq, p->cur);
 }
 
-#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND_2_PHASE
 int set_two_phase_freq(int cpufreq)
 {
 	int i  = 0;
@@ -1038,7 +1026,6 @@ int set_two_phase_freq(int cpufreq)
 void set_two_phase_freq_by_cpu ( int cpu_nr, int cpufreq){
 	two_phase_freq_array[cpu_nr-1] = cpufreq;
 }
-#endif
 
 int input_event_boosted(void)
 {
@@ -1125,11 +1112,11 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	unsigned int max_load_other_cpu = 0;
 	struct cpufreq_policy *policy;
 	unsigned int j, prev_load = 0, freq_next;
-#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND_2_PHASE
+
 	static unsigned int phase = 0;
 	static unsigned int counter = 0;
 	unsigned int nr_cpus;
-#endif
+
 
 	this_dbs_info->freq_lo = 0;
 	policy = this_dbs_info->cur_policy;
@@ -1179,7 +1166,38 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	cpufreq_notify_utilization(policy, load_at_max_freq);
 
 	
-#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND_MULTI_PHASE
+//gboost
+if ((graphics_boost && dbs_tuners_ins.gboost) || phase == 1) {
+
+	if (max_load_freq > dbs_tuners_ins.up_threshold * policy->cur) {
+		
+		if (counter < 5) {
+			counter++;
+			if (counter > 2) {
+				
+				phase = 1;
+			}
+		}
+
+		nr_cpus = num_online_cpus();
+		dbs_tuners_ins.two_phase_freq = two_phase_freq_array[nr_cpus-1];
+		if (dbs_tuners_ins.two_phase_freq < policy->cur)
+			phase=1;
+
+		if (dbs_tuners_ins.two_phase_freq != 0 && phase == 0) {
+			
+			dbs_freq_increase(policy, cur_load, dbs_tuners_ins.two_phase_freq);
+		} else {
+			
+			if (policy->cur < policy->max)
+				this_dbs_info->rate_mult =
+					dbs_tuners_ins.sampling_down_factor;
+			dbs_freq_increase(policy, cur_load, policy->max);
+		}
+		return;
+	}
+
+} else {
 	if (max_load_freq > up_threshold_level[1] * policy->cur) {
 		unsigned int avg_load = (prev_load + cur_load) >> 1;
 		int index = get_cpu_freq_index(policy->cur);
@@ -1211,44 +1229,12 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		
 		if (policy->cur == policy->max)
 			this_dbs_info->rate_mult = dbs_tuners_ins.sampling_down_factor;
+
 		return;
 	}
-#else
-	if (max_load_freq > dbs_tuners_ins.up_threshold * policy->cur) {
-		
-#ifndef CONFIG_CPU_FREQ_GOV_ONDEMAND_2_PHASE
-		if (policy->cur < policy->max)
-			this_dbs_info->rate_mult =
-				dbs_tuners_ins.sampling_down_factor;
-		dbs_freq_increase(policy, cur_load, policy->max);
-#else
-		if (counter < 5) {
-			counter++;
-			if (counter > 2) {
-				
-				phase = 1;
-			}
-		}
+}
 
-		nr_cpus = num_online_cpus();
-		dbs_tuners_ins.two_phase_freq = two_phase_freq_array[nr_cpus-1];
-		if (dbs_tuners_ins.two_phase_freq < policy->cur)
-			phase=1;
-
-		if (dbs_tuners_ins.two_phase_freq != 0 && phase == 0) {
-			
-			dbs_freq_increase(policy, cur_load, dbs_tuners_ins.two_phase_freq);
-		} else {
-			
-			if (policy->cur < policy->max)
-				this_dbs_info->rate_mult =
-					dbs_tuners_ins.sampling_down_factor;
-			dbs_freq_increase(policy, cur_load, policy->max);
-		}
-#endif
-		return;
-	}
-#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND_2_PHASE
+if (dbs_tuners_ins.gboost) {
 	if (counter > 0) {
 		counter--;
 		if (counter == 0) {
@@ -1256,8 +1242,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 			phase = 0;
 		}
 	}
-#endif
-#endif
+}
 
 //graphics boost
 	if (graphics_boost && dbs_tuners_ins.gboost) {
@@ -1268,6 +1253,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		if (dbs_tuners_ins.up_threshold == 49)
 			dbs_tuners_ins.up_threshold = old_up_threshold;
 	}
+//end
 
 	if (num_online_cpus() > 1) {
 		if (max_load_other_cpu >
