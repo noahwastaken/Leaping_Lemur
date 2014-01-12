@@ -2292,7 +2292,7 @@ int slim_reconfigure_now(struct slim_device *sb)
 			 * If controller overrides BW allocation,
 			 * delete this in remove channel itself
 			 */
-			if (slc->def != 0 && !ctrl->allocbw) {
+			if (slc->def != 0) {
 				list_del(&pch->pending);
 				kfree(pch);
 			}
