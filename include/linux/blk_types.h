@@ -66,6 +66,12 @@ struct bio {
 #define BIO_FS_INTEGRITY 9	
 #define BIO_QUIET	10	
 #define BIO_MAPPED_INTEGRITY 11
+/*
+ * Added for Req based dm which need to perform post processing. This flag
+ * ensures blk_update_request does not free the bios or request, this is done
+ * at the dm level
+ */
+#define BIO_DONTFREE 12
 #define bio_flagged(bio, flag)	((bio)->bi_flags & (1 << (flag)))
 
 #define BIO_POOL_BITS		(4)
