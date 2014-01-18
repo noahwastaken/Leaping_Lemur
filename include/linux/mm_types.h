@@ -252,11 +252,6 @@ struct mm_struct {
 	
 	mm_context_t context;
 
-	
-	unsigned int faultstamp;
-	unsigned int token_priority;
-	unsigned int last_interval;
-
 	unsigned long flags; 
 
 	struct core_state *core_state; 
