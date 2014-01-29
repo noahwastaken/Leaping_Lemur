@@ -50,6 +50,9 @@
 #define SYN_WIRELESS_DEBUG
 #define SYN_CALIBRATION_CONTROL
 
+#define MAX_PRESSURE 255
+#define MAX_WIDTH 30
+
 #define SYN_FW_NAME "tp_SYN.img"
 #define SYN_FW_TIMEOUT (30000)
 static DEFINE_MUTEX(syn_fw_mutex);
@@ -1316,12 +1319,12 @@ static int synaptics_input_register(struct synaptics_ts_data *ts)
 	input_set_abs_params(ts->input_dev, ABS_MT_POSITION_Y,
 		ts->layout[2], ts->layout[3], 0, 0);
 
-	input_set_abs_params(ts->input_dev, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
-	input_set_abs_params(ts->input_dev, ABS_MT_WIDTH_MAJOR, 0, 30, 0, 0);
-	input_set_abs_params(ts->input_dev, ABS_MT_PRESSURE, 0, 30, 0, 0);
+	input_set_abs_params(ts->input_dev, ABS_MT_TOUCH_MAJOR, 0, MAX_PRESSURE, 0, 0);
+	input_set_abs_params(ts->input_dev, ABS_MT_WIDTH_MAJOR, 0, MAX_WIDTH, 0, 0);
+	input_set_abs_params(ts->input_dev, ABS_MT_PRESSURE, 0, MAX_WIDTH, 0, 0);
 
 	input_set_abs_params(ts->input_dev, ABS_MT_AMPLITUDE,
-			0, ((255 << 16) | 15), 0, 0);
+			0, ((MAX_PRESSURE << 16) | 15), 0, 0);
 	input_set_abs_params(ts->input_dev, ABS_MT_POSITION,
 		0, ((1 << 31) | (ts->layout[1] << 16) | ts->layout[3]), 0, 0);
 
@@ -2195,11 +2198,11 @@ static int register_sr_touch_device(void)
 	input_set_abs_params(ts->sr_input_dev, ABS_MT_POSITION_Y,
 		ts->layout[2], ts->layout[3], 0, 0);
 	input_set_abs_params(ts->sr_input_dev, ABS_MT_TOUCH_MAJOR,
-		0, 255, 0, 0);
+		0, MAX_PRESSURE, 0, 0);
 	input_set_abs_params(ts->sr_input_dev, ABS_MT_PRESSURE,
-		0, 30, 0, 0);
+		0, MAX_WIDTH, 0, 0);
 	input_set_abs_params(ts->sr_input_dev, ABS_MT_WIDTH_MAJOR,
-		0, 30, 0, 0);
+		0, MAX_WIDTH, 0, 0);
 
 	if (input_register_device(ts->sr_input_dev)) {
 		input_free_device(ts->sr_input_dev);
