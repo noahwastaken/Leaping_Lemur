@@ -325,8 +325,7 @@ config METRICO_TP
         METRICO_TP
 
 config HTC_NETWORK_MODIFY
-	bool "slelect default enable HTC_NETWORK_MODIFY config"
-	default y
+    tristate "HTC_NETWORK_MODIFY"
 	---help---
 	HTC_NETWORK_MODIFY
 
