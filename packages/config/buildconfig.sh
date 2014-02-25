@@ -147,6 +147,15 @@ else
   echo "EXFAT=0" >> $CONFIGFILE;
 fi
 
+#Optimized Bionic Libraries
+BIONIC=`grep "item.0.8" /tmp/aroma/mods.prop | cut -d '=' -f2`
+echo -e "\n\n##### Bionic Libraries ######\n# 1 to Optimized Bionic Libraries\n# 0 to disable\n" >> $CONFIGFILE
+if [ $EXFAT = 1 ]; then
+  echo "BIONIC=1" >> $CONFIGFILE;
+else
+  echo "BIONIC=0" >> $CONFIGFILE;
+fi
+
 #GPU OC
 GPU_OC=`cat /tmp/aroma/gpu.prop | cut -d '=' -f2`
 echo -e "\n\n##### GPU Settings ######\n#values:  410 450 477 491 504 531 558 585\n#These cannot be applied if you selected stock GPU frequency during installation\n" >> $CONFIGFILE

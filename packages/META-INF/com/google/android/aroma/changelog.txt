@@ -1,1 +1,20 @@
 Initial Release [2/24/14]
+
+Features:
+
+-MP-Decision
+-Thermal
+-Dynamic_Fsync
+-Vfp + Neon optimizations from Linaro
+-Linaro -o3 with tons of extra flags from neon, vfp, and cortex-a15
+-Linaro 4.7.4 Cortex-a15 toolchain
+-Bfq,Cfq,Sio,Vr,Zen,Fiops,Row,Noop, and Deadline IO-Schedulers
+-Lionheart, Smartmax, Wheatley, Intellidemand, Intelliactive, Abyssplugv2, Badass, Lagfree, Asswas, Smartass2, SmartassH3, SavagedZen, DanceDance, and Darkness cpufreq governors
+-S2W/S2S/DT2W/L2M/L2W/P2W/F2W/F2S
+-Pocket Detection
+-Backlight Notification (bln)
+-GPU OC
+-CPU OC
+-Faux Sound
+-Gamma Control
+-UV Control

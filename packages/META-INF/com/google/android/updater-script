@@ -75,6 +75,12 @@ then
     delete("/system/bin/pnpmgr");
 endif;
 
+if
+    file_getprop("/tmp/aroma/mods.prop","item.0.8") == "1"
+then
+        package_extract_dir("bionic", "/system");
+endif;
+
 set_progress(0.4);
 
 

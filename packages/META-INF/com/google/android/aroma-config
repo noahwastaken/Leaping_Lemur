@@ -69,13 +69,6 @@ agreebox("Terms Of Use","Please read the Terms of Use...","icons/agreement",
 
 textbox("Changelog",ini_get("rom_name") + " Changelog","icons/info",readfile_aroma("changelog.txt"));
 
-alert(
-  "PLEASE NOTE:",
-  "This kernel will allow you to choose hardware settings that may not work with your device. If you install this and have problems such as instability or random reboots, please reinstall with a lower CPU frequency or higher voltage.",
-  "@alert",
-  "OK"
-);
-
 selectbox(
   "Set each CPU core separately","If you say yes here you will have the option to set the max freq for each core individually\n","@personalize","cpuopt.prop",
   "No","(default)",1,
@@ -236,6 +229,7 @@ checkbox(
   "Disable HTC color enhancement","truer color",0,
   "Enable graphics boost","Better gaming performance",1,
   "Disable HTC pnpmgr","HTC pnpmgr ensures smooth ui, recommend leaving it enabled",0,
+  "Optimized Bionic Libraries","",0,
   "Enable exFAT support","",0
 );
   
@@ -319,8 +313,6 @@ if getvar("retstatus")=="0" then
   "Installation Completed",
   "<#080>Congratulations...</#>\n\n"+
   "Lemur has been installed successfully!\n\n"+
-  "Please let your phone boot completely...\n\n"+
-  "...and then REBOOT AGAIN!!!\n\n"+
   "Enjoy!",
   "@info"
 );
