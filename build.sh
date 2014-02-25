@@ -21,7 +21,6 @@
        mkdir -p "out/$c"
           cp -R "$t/system" out/$c
           cp -R "$t/META-INF" out/$c
-          cp -R "$t/kernel" out/$c
 	  cp -R "$t/boot" out/$c
 	  cp -R "$t/config" out/$c
 	  cp -R "$t/l2m" out/$c
@@ -50,7 +49,7 @@ make -j`grep 'processor' /proc/cpuinfo | wc -l` CROSS_COMPILE=$TOOLCHAIN #>> com
    echo ""
    echo "<<>><<>>  Collecting modules and zimage <<>><<>>"
    echo ""
-   cp $k/arch/arm/boot/zImage out/$c/kernel/kernel
+   cp $k/arch/arm/boot/zImage out/$c/boot/lemur.zImage
    for mo in $(find . -name "*.ko"); do
 		cp "${mo}" $m
    done
