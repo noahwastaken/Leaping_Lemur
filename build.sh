@@ -13,7 +13,7 @@
 #     make clean
 
 # Setup the build
- cd $k/arch/arm/configs/BBKconfigs
+ cd $k/arch/arm/configs/Lemurconfigs
     for c in *
       do
         cd $k
