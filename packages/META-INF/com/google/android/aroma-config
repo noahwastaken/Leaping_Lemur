@@ -1,0 +1,329 @@
+﻿### LICENSE:
+#
+# Copyright (C) 2011 Ahmad Amarullah ( http://amarullz.com/ )
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+### FILE INFO:
+#
+# AROMA Installer 2.70 - AROMA Installer Test Script Configuration
+#       (c) 2011-2012 by Ahmad Amarullah
+#           amarullz - xda-developers
+#           http://www.amarullz.com/
+#
+#       Binary Version  : 2.70B6
+#       Binary Codename : Flamboyan
+#
+### INFO:
+#
+# * AROMA Resource Dir  = META-INF/com/google/android/aroma
+#
+# * AROMA Temporary Dir = /tmp/aroma/
+
+ini_set("rom_name",             "Leaping Lemur");
+ini_set("rom_version",          "1.0");
+ini_set("rom_author",           "Tal Noah");
+ini_set("rom_device",           "Sprint HTC One");
+ini_set("rom_date",             "Feb 24, 2014");
+
+ini_set("force_colorspace","rgba");
+ini_set("dp","6");
+
+fontresload( "0", "ttf/Roboto-Regular.ttf", "12" );
+fontresload( "1", "ttf/Roboto-Regular.ttf", "18" ); 
+
+splash(3000, "lemur");
+
+theme("ics");
+
+viewbox(
+    "Welcome",
+    "You are about to flash <b>"+
+	  ini_get("rom_name")+
+	"</b>\nfor <b>"+ini_get("rom_device")+"</b>.\n\n"+
+    
+	
+      "  VERSION\t: <b><#selectbg_g>"+ini_get("rom_version")+"</#></b>\n"+
+      "  AUTHOR \t: <b><#selectbg_g>"+ini_get("rom_author")+"</#></b>\n"+
+      "  RELEASED\t: <b><#selectbg_g>"+ini_get("rom_date")+"</#></b>\n\n\n"+
+
+    "Press Next to Continue...",
+    "@welcome"
+);
+
+agreebox("Terms Of Use","Please read the Terms of Use...","icons/agreement",
+   "" + readfile_aroma("agreement.txt"),
+   "I Agree with these Terms Of Use...",
+   "Please check the box..."
+);
+
+textbox("Changelog",ini_get("rom_name") + " Changelog","icons/info",readfile_aroma("changelog.txt"));
+
+alert(
+  "PLEASE NOTE:",
+  "This kernel will allow you to choose hardware settings that may not work with your device. If you install this and have problems such as instability or random reboots, please reinstall with a lower CPU frequency or higher voltage.",
+  "@alert",
+  "OK"
+);
+
+selectbox(
+  "Set each CPU core separately","If you say yes here you will have the option to set the max freq for each core individually\n","@personalize","cpuopt.prop",
+  "No","(default)",1,
+  "Yes","",0
+);
+
+if file_getprop("/tmp/aroma/cpuopt.prop","selected.0") == "1"
+then
+
+selectbox(
+  "Maximum CPU Frequency","Select maximum CPU frequency\n","@personalize","freq0.prop",
+  "1134MHz","",0,
+  "1350MHz","",0,
+  "1566MHz","",0,
+  "1728MHz","(stock)",1,
+  "1836MHz","",0,
+  "1890MHz","",0,
+  "1944MHz","",0,
+  "1998MHz","",0,
+  "2052MHz","",0,
+  "2106MHz","",0,
+  "2133MHz","",0,
+  "2160MHz","",0,
+  "2214MHz","",0,
+  "2295MHz","",0
+);
+
+
+endif;
+
+if file_getprop("/tmp/aroma/cpuopt.prop","selected.0") == "2"
+then
+
+selectbox(
+  "Maximum CPU Frequency","Select maximum frequency for first CPU core\n","@personalize","freq0.prop",
+  "1134MHz","",0,
+  "1350MHz","",0,
+  "1566MHz","",0,
+  "1728MHz","(stock)",1,
+  "1836MHz","",0,
+  "1890MHz","",0,
+  "1944MHz","",0,
+  "1998MHz","",0,
+  "2052MHz","",0,
+  "2106MHz","",0,
+  "2133MHz","",0,
+  "2160MHz","",0,
+  "2214MHz","",0,
+  "2295MHz","",0
+);
+
+selectbox(
+  "Maximum CPU Frequency","Select maximum frequency for second CPU core\n","@personalize","freq1.prop",
+  "1134MHz","",0,
+  "1350MHz","",0,
+  "1566MHz","",0,
+  "1728MHz","(stock)",1,
+  "1836MHz","",0,
+  "1890MHz","",0,
+  "1944MHz","",0,
+  "1998MHz","",0,
+  "2052MHz","",0,
+  "2106MHz","",0,
+  "2133MHz","",0,
+  "2160MHz","",0,
+  "2214MHz","",0,
+  "2295MHz","",0
+);
+
+selectbox(
+  "Maximum CPU Frequency","Select maximum frequency for third CPU core\n","@personalize","freq2.prop",
+  "1134MHz","",0,
+  "1350MHz","",0,
+  "1566MHz","",0,
+  "1728MHz","(stock)",1,
+  "1836MHz","",0,
+  "1890MHz","",0,
+  "1944MHz","",0,
+  "1998MHz","",0,
+  "2052MHz","",0,
+  "2106MHz","",0,
+  "2133MHz","",0,
+  "2160MHz","",0,
+  "2214MHz","",0,
+  "2295MHz","",0
+);
+
+selectbox(
+  "Maximum CPU Frequency","Select maximum frequency for fourth CPU core\n","@personalize","freq3.prop",
+  "1134MHz","",0,
+  "1350MHz","",0,
+  "1566MHz","",0,
+  "1728MHz","(stock)",1,
+  "1836MHz","",0,
+  "1890MHz","",0,
+  "1944MHz","",0,
+  "1998MHz","",0,
+  "2052MHz","",0,
+  "2106MHz","",0,
+  "2133MHz","",0,
+  "2160MHz","",0,
+  "2214MHz","",0,
+  "2295MHz","",0
+);
+
+endif;
+
+selectbox(
+  "Auto Undervolting","Lowers the voltage for the lowest cpu frequency. Undervolting may cause instability.\n","@personalize","uv.prop",
+  "Stock","",0,
+  "Undervolt (850 min)","",1,
+  "Undervolt (825 min)","",0,
+  "Undervolt (800 min)","",0,
+  "Undervolt (775 min)","",0,
+  "Undervolt (750 min)","",0,
+  "Undervolt (725 min)","",0
+);
+
+selectbox(
+  "Select maximum GPU frequency","\n","@personalize","gpu.prop",
+  "400Mhz","(stock)",0,
+  "410Mhz","(stockish, but allows on the fly changing)",0,
+  "450MHz","(overclocked)",1,
+  "477MHz","(overclocked)",0,
+  "491MHz","(overclocked)",0,
+  "504MHz","(overclocked)",0,
+  "531MHz","(overclocked)",0,
+  "558MHz","(not recommended)",0,
+  "585MHz","(not recommended)",0
+);
+
+selectbox(
+  "Select GPU governor","\n","@personalize","gpugov.prop",
+  "Ondemand","(stock)",1,
+  "Simple","",0
+);
+
+selectbox(
+  "Select thermal settings","Determines the amount of thermal throttling for the CPU\n","@personalize","thermal.prop",
+  "extra cool","even more thermal throttling",0,
+  "run cool","more thermal throttling",0,
+  "default","default thermal throttling",1,
+  "run hot","less thermal throttling",0
+);
+
+selectbox(
+  "Select mpdecision settings","Manages CPU cores\n","@personalize","mpdec.prop",
+  "battery savings","less aggressive (EXPERIMENTAL)",0,
+  "default","HTC stock",1,
+  "performance","more aggressive (EXPERIMENTAL)",0
+);
+
+checkbox(
+  "Other settings","Select the mods you want to install\n","@personalize","mods.prop",
+  "Enable Logo2menu","Use HTC logo as menu button",1,
+  "Enable Button Light Notification","",1,
+  "Enable USB fastcharge","",0,
+  "Disable HTC color enhancement","truer color",0,
+  "Enable graphics boost","Better gaming performance",1,
+  "Disable HTC pnpmgr","HTC pnpmgr ensures smooth ui, recommend leaving it enabled",0,
+  "Enable exFAT support","",0
+);
+  
+checkbox(
+  "Sleep/wake settings","Select the mods you want to install","@personalize","sw.prop",
+  "Sweep2Wake","Sweep across buttons to sleep/wake phone",1,
+  "Sweep2Sleep Only","Sweep across buttons to sleep phone",0,
+  "DoubleTap2Wake","Double tap bottom of screen to wake phone",1,
+  "DoubleTap2Wake (fullscreen)","Double tap anywhere on screen to wake phone",0,
+  "Logo2Wake","Wake phone with long press of HTC logo",0,
+  "Pick2Wake","Wake phone by picking up the phone while laying horizontally",1,
+  "Flick2Wake","Wake phone by flicking your phone with your wrist",1,
+  "Flick2Wake","Put your phone to sleep by flicking your phone with your wrist",0,
+  "Pocket detection","Disables sleep/wake functions in pocket",1
+);
+
+if file_getprop("/tmp/aroma/sw.prop","item.0.1") == "1" && file_getprop("/tmp/aroma/sw.prop","item.0.2") == "1"
+then 
+alert(
+  "PLEASE NOTE:",
+  "You must choose either sweep2wake OR sleep2sleep only.  You can't choose both",
+  "@alert",
+  "OK"
+);
+back("1");
+endif;
+
+if file_getprop("/tmp/aroma/sw.prop","item.0.3") == "1" && file_getprop("/tmp/aroma/sw.prop","item.0.4") == "1"
+then 
+alert(
+  "PLEASE NOTE:",
+  "You must choose either doubletap2wake or doubletap2wake fullscreen.  You can't choose both",
+  "@alert",
+  "OK"
+);
+back("1");
+endif;
+
+if file_getprop("/tmp/aroma/sw.prop","item.0.1") == "1" ||
+  file_getprop("/tmp/aroma/sw.prop","item.0.2") == "1" ||
+  file_getprop("/tmp/aroma/sw.prop","item.0.3") == "1" ||
+  file_getprop("/tmp/aroma/sw.prop","item.0.4") == "1" ||
+  file_getprop("/tmp/aroma/sw.prop","item.0.5") == "1" ||
+  file_getprop("/tmp/aroma/sw.prop","item.0.6") == "1" ||
+  file_getprop("/tmp/aroma/sw.prop","item.0.7") == "1" ||
+  file_getprop("/tmp/aroma/sw.prop","item.0.8") == "1"
+then
+selectbox(
+  "Sleep/wake vibration settings","Set the amount of vibration for sweep2wake/logo2wake/doubletap2wake/flick2wake/pick2wake\n","@personalize","vibrate.prop",
+  "No vibration","",0,
+  "Default vibration","",1,
+  "Stronger vibration","",0
+);
+endif;
+
+menubox(
+  "Lemur Installer",
+  "Ready to install",
+  "@info",
+  "menu.prop",
+  "Install Lemur","","@install",
+  "Abort installation","","@default"
+);
+
+if prop("menu.prop","selected")=="2"
+then
+  exit("");
+endif;
+
+setvar("retstatus",
+install(
+  "Installing",
+  "Installing Lemur Kernel...\nPlease wait...",
+  "@install")
+);
+
+ini_set("text_next", "Finish");
+
+if getvar("retstatus")=="0" then
+  viewbox(
+  "Installation Completed",
+  "<#080>Congratulations...</#>\n\n"+
+  "Lemur has been installed successfully!\n\n"+
+  "Please let your phone boot completely...\n\n"+
+  "...and then REBOOT AGAIN!!!\n\n"+
+  "Enjoy!",
+  "@info"
+);
+else
+   viewbox("Installation Failed","\n\nInstaller Status: "+ getvar("retstatus"),"@alert");
+endif;
