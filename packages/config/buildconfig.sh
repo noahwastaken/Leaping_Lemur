@@ -1,7 +1,7 @@
 #!/sbin/sh
 
 #Build config file
-CONFIGFILE="/tmp/elementalx.conf"
+CONFIGFILE="/tmp/lemur.conf"
 
 #L2M
 L2M=`grep "item.0.1" /tmp/aroma/mods.prop | cut -d '=' -f2`
