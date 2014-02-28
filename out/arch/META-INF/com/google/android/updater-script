@@ -1,0 +1,117 @@
+set_progress(0.0);
+ui_print("");
+ui_print("Installing Lemur Kernel...");
+set_progress(0.1);
+
+ifelse(is_mounted("/system") == "/system", unmount("/system"));
+ifelse(is_mounted("/cache") == "/cache", unmount("/cache"));
+
+ui_print("Wiping /cache");
+run_program("/sbin/busybox", "mount", "/cache");
+delete_recursive("/cache/");
+run_program("/sbin/busybox", "umount", "/cache");
+
+
+ui_print("Mounting /system");
+mount("ext4", "EMMC", "/dev/block/mmcblk0p37", "/system");
+
+ui_print("Cleaning up");
+
+delete("/system/etc/init.d/01-h2w");
+delete("/system/etc/init.d/01-f2s");
+delete("/system/etc/init.d/01-f2w");
+delete("/system/etc/init.d/01-f2ws");
+delete("/system/etc/init.d/01-f2wt");
+delete("/system/etc/init.d/01-p2w");
+delete("/system/etc/init.d/01-pwp");
+delete("/system/etc/init.d/01-therm");
+delete("/system/etc/init.d/01-menu");
+delete("/system/etc/init.d/01-blinkbuttons");
+delete("/system/etc/init.d/thoravukk");
+delete("/system/etc/init.d/99elementalx");
+delete("/system/etc/init.d/89elementalx");
+delete("/system/etc/init.d/99elementalx~");
+delete("/system/etc/init.d/99bulletproof");
+delete("/system/etc/init.d/30sweep2wake");
+delete("/system/lib/modules/bcmdhd.ko");
+delete("/system/etc/elementalx.conf");
+delete("/system/lib/modules/wp_mod.ko");
+delete("/system/lib/modules/texfat.ko");
+delete("/system/usr/keylayout/synaptics-rmi-touchscreen.kl");
+
+
+ui_print("Installing system files");
+package_extract_dir("system", "/system");
+set_perm_recursive(0, 2000, 0777, 0777, "/system/etc/init.d/99Lemur");
+set_perm_recursive(0, 2000, 0777, 0777, "/system/bin/mpdecision");
+set_perm_recursive(0, 2000, 0777, 0777, "/system/bin/pnpmgr");
+set_perm_recursive(0, 0, 0644, 0644, "/system/lib/modules");
+set_perm_recursive(0, 2000, 0777, 0777, "/system/bin/fstrim");
+
+
+package_extract_dir("config", "/tmp");
+set_perm(0, 0, 0777, "/tmp/buildconfig.sh");
+set_perm(0, 0, 0777, "/tmp/busybox");
+run_program("/tmp/buildconfig.sh");
+run_program("/tmp/busybox", "cp", "/tmp/lemur.conf", "/system/etc/lemur.conf");
+set_perm(0, 0, 0666, "/system/etc/lemur.conf");
+set_perm(0, 0, 0777, "/tmp/sleep");
+set_perm(0, 0, 0777, "/tmp/fstrim");
+
+if
+    file_getprop("/tmp/aroma/mods.prop","item.0.1") == "1"
+then
+	package_extract_dir("l2m", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma/mods.prop","item.0.1") == "0"
+then
+	package_extract_dir("no_l2m", "/system");
+endif;
+
+if
+    file_getprop("/tmp/aroma/mods.prop","item.0.6") == "1"
+then
+    delete("/system/bin/pnpmgr");
+endif;
+
+if
+    file_getprop("/tmp/aroma/mods.prop","item.0.8") == "1"
+then
+        package_extract_dir("bionic", "/system");
+endif;
+
+set_progress(0.4);
+
+
+package_extract_dir("boot", "/tmp");
+set_perm(0, 0, 0777, "/tmp/max_oc.sh");
+set_perm(0, 0, 0777, "/tmp/edit_ramdisk.sh");
+set_perm(0, 0, 0777, "/tmp/abootimg");
+
+run_program("/tmp/busybox", "dd", "if=/dev/block/mmcblk0p35", "of=/tmp/boot.img");
+run_program("/tmp/abootimg", "-x", "/tmp/boot.img", "/tmp/bootimg.cfg", "/tmp/zImage", "/tmp/initrd.img");
+run_program("/tmp/max_oc.sh");
+run_program("/tmp/edit_ramdisk.sh");
+run_program("/tmp/abootimg", "-u", "/tmp/boot.img", "-f", "/tmp/cmdline.cfg", "-k", "/tmp/lemur.zImage", "-r", "/tmp/initrd.img");
+
+set_progress(0.8);
+
+ui_print("@Installing Kernel");
+run_program("/tmp/busybox", "dd", "if=/tmp/boot.img", "of=/dev/block/mmcblk0p35");
+
+ui_print("");
+set_progress(0.9);
+
+ui_print("");
+
+run_program("/tmp/sleep", "2");
+run_program("/tmp/fstrim", "-v", "/system");
+run_program("/tmp/sleep", "2");
+
+ui_print("Unmounting /system");
+unmount("/system");
+
+ui_print("");
+set_progress(1.0);
+ui_print("Finished!");
