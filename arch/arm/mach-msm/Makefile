@@ -596,3 +596,5 @@ obj-$(CONFIG_IOEXTENDER) += ADP5585_ioextender.o
 obj-y += htc_cpu_usage_stats.o
 
 obj-$(CONFIG_LCD_KCAL) += msm_kcal_ctrl.o
+
+obj-$(CONFIG_HAS_MACH_MEMUTILS) += memutils/
