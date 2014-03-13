@@ -1308,6 +1308,8 @@ if (dbs_tuners_ins.gboost) {
 			if (policy->cur < dbs_tuners_ins.sync_freq)
 				dbs_freq_increase(policy, cur_load,
 						dbs_tuners_ins.sync_freq);
+			else
+				trace_cpufreq_interactive_already (policy->cpu, cur_load, policy->cur,policy->cur);
 			return;
 		}
 
@@ -1316,6 +1318,8 @@ if (dbs_tuners_ins.gboost) {
 			if (policy->cur < dbs_tuners_ins.optimal_freq)
 				dbs_freq_increase(policy, cur_load,
 						dbs_tuners_ins.optimal_freq);
+			else
+				trace_cpufreq_interactive_already (policy->cpu, cur_load, policy->cur,policy->cur);
 			return;
 		}
 	}
