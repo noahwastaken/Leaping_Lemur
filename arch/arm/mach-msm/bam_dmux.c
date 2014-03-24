@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -1650,8 +1650,8 @@ static void ul_timeout(struct work_struct *work)
 		return;
 	}
 	ret = write_trylock_irqsave(&ul_wakeup_lock, flags);
-	if (!ret) { 
-		schedule_delayed_work(&ul_timeout_work,
+	if (!ret) { /* failed to grab lock, reschedule and bail */
+		queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
 				msecs_to_jiffies(UL_TIMEOUT_DELAY));
 		return;
 	}
@@ -1676,11 +1676,11 @@ static void ul_timeout(struct work_struct *work)
 				__func__, ul_packet_written);
 			DBG("%s: pkt written %d\n", __func__, ul_packet_written);
 			ul_packet_written = 0;
-			schedule_delayed_work(&ul_timeout_work,
+			queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
 					msecs_to_jiffies(UL_TIMEOUT_DELAY));
                 } else if(polling_mode) {
                         DMUX_LOG_KERR("%s: BAM is in polling mode, delay UL power down", __func__);
-                        schedule_delayed_work(&ul_timeout_work,
+                        queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
                                        msecs_to_jiffies(UL_TIMEOUT_DELAY));
                 } else {
 			ul_powerdown();
@@ -1746,7 +1746,7 @@ static void ul_wakeup(void)
 		}
 		if (likely(do_vote_dfab))
 			vote_dfab();
-		schedule_delayed_work(&ul_timeout_work,
+		queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
 				msecs_to_jiffies(UL_TIMEOUT_DELAY));
 		bam_is_connected = 1;
 		mutex_unlock(&wakeup_lock);
@@ -1784,7 +1784,7 @@ static void ul_wakeup(void)
 	bam_is_connected = 1;
 	bam_dmux_log("%s complete\n", __func__);
 	pr_info(MODULE_NAME "%s complete\n", __func__);
-	schedule_delayed_work(&ul_timeout_work,
+	queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
 				msecs_to_jiffies(UL_TIMEOUT_DELAY));
 	mutex_unlock(&wakeup_lock);
 }
