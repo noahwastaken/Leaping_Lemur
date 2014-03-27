@@ -215,5 +215,43 @@ else
   echo "GPU_GOV=1" >> $CONFIGFILE;
 fi
 
+#CPU Governor
+CPU_GOV=`cat /tmp/aroma/cpugov.prop | cut -d '=' -f2`
+echo -e "\n\n##### CPU Governor #####\n# 1 ondemand (default)" >> $CONFIGFILE
+echo -e "\n# 2 abyssplugv2\n# 3 asswax\n# 4 badass\n# 5 dancedance\n# 6 darkness\n# 7 intellidemand\n# 8 intelliactive\n# 9 interactivex2\n# 10 lagfree\n# 11 lionheart\n# 12 smartass2\n# 13 smartassH3\n# 14 smartmax\n# 15 savagedzen\n# 16 wheatley\n" >> $CONFIGFILE
+if [ $CPU_GOV = 2 ]; then
+  echo "CPU_GOV=2" >> $CONFIGFILE;
+elif [ $CPU_GOV = 3 ]; then
+  echo "CPU_GOV=3" >> $CONFIGFILE;
+elif [ $CPU_GOV = 4 ]; then
+  echo "CPU_GOV=4" >> $CONFIGFILE;
+elif [ $CPU_GOV = 5 ]; then
+  echo "CPU_GOV=5" >> $CONFIGFILE;
+elif [ $CPU_GOV = 6 ]; then
+  echo "CPU_GOV=6" >> $CONFIGFILE;
+elif [ $CPU_GOV = 7 ]; then
+  echo "CPU_GOV=7" >> $CONFIGFILE;
+elif [ $CPU_GOV = 8 ]; then
+  echo "CPU_GOV=8" >> $CONFIGFILE;
+elif [ $CPU_GOV = 9 ]; then
+  echo "CPU_GOV=9" >> $CONFIGFILE;
+elif [ $CPU_GOV = 10 ]; then
+  echo "CPU_GOV=10" >> $CONFIGFILE;
+elif [ $CPU_GOV = 11 ]; then
+  echo "CPU_GOV=11" >> $CONFIGFILE;
+elif [ $CPU_GOV = 12 ]; then
+  echo "CPU_GOV=12" >> $CONFIGFILE;
+elif [ $CPU_GOV = 13 ]; then
+  echo "CPU_GOV=13" >> $CONFIGFILE;
+elif [ $CPU_GOV = 14 ]; then
+  echo "CPU_GOV=14" >> $CONFIGFILE;
+elif [ $CPU_GOV = 15 ]; then
+  echo "CPU_GOV=15" >> $CONFIGFILE;
+elif [ $CPU_GOV = 16 ]; then
+  echo "CPU_GOV=16" >> $CONFIGFILE;
+else
+  echo "CPU_GOV=1" >> $CONFIGFILE;
+fi
+
 echo -e "\n\n##############################" >> $CONFIGFILE
 #END

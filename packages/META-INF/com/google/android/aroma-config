@@ -177,6 +177,26 @@ selectbox(
 endif;
 
 selectbox(
+  "Select CPU governor","\n","@personalize","cpugov.prop",
+  "ondemand","(stock)",1,
+  "abyssplugv2","",0
+  "asswax","",0
+  "badass","",0
+  "dancedance","",0
+  "darkness","",0
+  "intellidemand","",0
+  "intelliactive","",0
+  "interactivex2","",0
+  "lagfree","",0
+  "lionheart","",0
+  "smartass2","",0
+  "smartassH3","",0
+  "smartmax","",0
+  "savagedzen","",0
+  "wheatley","",0
+);
+
+selectbox(
   "Auto Undervolting","Lowers the voltage for the lowest cpu frequency. Undervolting may cause instability.\n","@personalize","uv.prop",
   "Stock","",0,
   "Undervolt (850 min)","",1,
