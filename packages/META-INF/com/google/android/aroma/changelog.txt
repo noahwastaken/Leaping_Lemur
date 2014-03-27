@@ -1,3 +1,16 @@
+Second Release [3/27/14]
+-FS: import F2FS
+-reduce and fix wakelock issues
+-redo synaptic algorithms
+-Add governor selection to aroma
+-FM radio for sense 6
+-msm: Add 16 bit PCM as default format for backend
+-irq: Set CPU affinity right on thread creation
+-cpufreq: Optimize cpufreq_frequency_table_verify() .
+-vfp/ test hard float 
+-enable input boost and add some tunables in ondemand
+-fix logo2wake deep sleep
+
 Initial Release [2/24/14]
 
 Features:
