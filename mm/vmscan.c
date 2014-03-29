@@ -391,6 +391,8 @@ static pageout_t pageout(struct page *page, struct address_space *mapping,
 		if (!PageWriteback(page)) {
 			
 			ClearPageReclaim(page);
+			if (PageError(page))
+				return PAGE_ACTIVATE;
 		}
 		trace_mm_vmscan_writepage(page,
 			trace_reclaim_flags(page, sc->reclaim_mode));
