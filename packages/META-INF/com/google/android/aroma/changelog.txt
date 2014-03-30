@@ -1,3 +1,11 @@
+Third Releae [3/29/14]
+-Reverted back to Linux verion 3.4.10
+-Intelliplug (intelligent hotplugging by faux123)
+-memcpy, memmove, copy_page optimization 
+-enabled MOTOROLA MEMUTILS OPT
+-reverted fm radio fix
+-Sound Mods
+
 Second Release [3/27/14]
 -FS: import F2FS
 -reduce and fix wakelock issues
