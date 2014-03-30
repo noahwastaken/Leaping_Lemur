@@ -91,23 +91,135 @@ enum tcp_bit_set {
 };
 
 static const u8 tcp_conntracks[2][6][TCP_CONNTRACK_MAX] = {
-	{
-	   { sSS, sSS, sIG, sIG, sIG, sIG, sIG, sSS, sSS, sS2 },
- { sIV, sIV, sIG, sIG, sIG, sIG, sIG, sIG, sIG, sSR },
-    { sIV, sIV, sFW, sFW, sLA, sLA, sLA, sTW, sCL, sIV },
-	   { sES, sIV, sES, sES, sCW, sCW, sTW, sTW, sCL, sIV },
-    { sIV, sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL },
-   { sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV }
-	},
-	{
-	   { sIV, sS2, sIV, sIV, sIV, sIV, sIV, sIV, sIV, sS2 },
- { sIV, sSR, sIG, sIG, sIG, sIG, sIG, sIG, sIG, sSR },
-    { sIV, sIV, sFW, sFW, sLA, sLA, sLA, sTW, sCL, sIV },
-	   { sIV, sIG, sSR, sES, sCW, sCW, sTW, sTW, sCL, sIG },
-    { sIV, sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL },
-   { sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV }
-	}
+        {
+/* ORIGINAL */
+/*              sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2        */
+/*syn*/           { sSS, sSS, sIG, sIG, sIG, sIG, sIG, sSS, sSS, sS2 },
+/*
+ *        sNO -> sSS        Initialize a new connection
+ *        sSS -> sSS        Retransmitted SYN
+ *        sS2 -> sS2        Late retransmitted SYN
+ *        sSR -> sIG
+ *        sES -> sIG        Error: SYNs in window outside the SYN_SENT state
+ *                        are errors. Receiver will reply with RST
+ *                        and close the connection.
+ *                        Or we are not in sync and hold a dead connection.
+ *        sFW -> sIG
+ *        sCW -> sIG
+ *        sLA -> sIG
+ *        sTW -> sSS        Reopened connection (RFC 1122).
+ *        sCL -> sSS
+ */
+/*              sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2        */
+/*synack*/ { sIV, sIV, sSR, sIV, sIV, sIV, sIV, sIV, sIV, sSR },
+/*
+ *        sNO -> sIV        Too late and no reason to do anything
+ *        sSS -> sIV        Client can't send SYN and then SYN/ACK
+ *        sS2 -> sSR        SYN/ACK sent to SYN2 in simultaneous open
+ *        sSR -> sSR        Late retransmitted SYN/ACK in simultaneous open
+ *        sES -> sIV        Invalid SYN/ACK packets sent by the client
+ *        sFW -> sIV
+ *        sCW -> sIV
+ *        sLA -> sIV
+ *        sTW -> sIV
+ *        sCL -> sIV
+ */
+/*              sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2        */
+/*fin*/    { sIV, sIV, sFW, sFW, sLA, sLA, sLA, sTW, sCL, sIV },
+/*
+ *        sNO -> sIV        Too late and no reason to do anything...
+ *        sSS -> sIV        Client migth not send FIN in this state:
+ *                        we enforce waiting for a SYN/ACK reply first.
+ *        sS2 -> sIV
+ *        sSR -> sFW        Close started.
+ *        sES -> sFW
+ *        sFW -> sLA        FIN seen in both directions, waiting for
+ *                        the last ACK.
+ *                        Migth be a retransmitted FIN as well...
+ *        sCW -> sLA
+ *        sLA -> sLA        Retransmitted FIN. Remain in the same state.
+ *        sTW -> sTW
+ *        sCL -> sCL
+ */
+/*              sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2        */
+/*ack*/           { sES, sIV, sES, sES, sCW, sCW, sTW, sTW, sCL, sIV },
+/*
+ *        sNO -> sES        Assumed.
+ *        sSS -> sIV        ACK is invalid: we haven't seen a SYN/ACK yet.
+ *        sS2 -> sIV
+ *        sSR -> sES        Established state is reached.
+ *        sES -> sES        :-)
+ *        sFW -> sCW        Normal close request answered by ACK.
+ *        sCW -> sCW
+ *        sLA -> sTW        Last ACK detected.
+ *        sTW -> sTW        Retransmitted last ACK. Remain in the same state.
+ *        sCL -> sCL
+ */
+/*              sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2        */
+/*rst*/    { sIV, sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL },
+/*none*/   { sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV }
+        },
+        {
+/* REPLY */
+/*              sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2        */
+/*syn*/           { sIV, sS2, sIV, sIV, sIV, sIV, sIV, sIV, sIV, sS2 },
+/*
+ *        sNO -> sIV        Never reached.
+ *        sSS -> sS2        Simultaneous open
+ *        sS2 -> sS2        Retransmitted simultaneous SYN
+ *        sSR -> sIV        Invalid SYN packets sent by the server
+ *        sES -> sIV
+ *        sFW -> sIV
+ *        sCW -> sIV
+ *        sLA -> sIV
+ *        sTW -> sIV        Reopened connection, but server may not do it.
+ *        sCL -> sIV
+ */
+/*              sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2        */
+/*synack*/ { sIV, sSR, sIG, sIG, sIG, sIG, sIG, sIG, sIG, sSR },
+/*
+ *        sSS -> sSR        Standard open.
+ *        sS2 -> sSR        Simultaneous open
+ *        sSR -> sIG        Retransmitted SYN/ACK, ignore it.
+ *        sES -> sIG        Late retransmitted SYN/ACK?
+ *        sFW -> sIG        Might be SYN/ACK answering ignored SYN
+ *        sCW -> sIG
+ *        sLA -> sIG
+ *        sTW -> sIG
+ *        sCL -> sIG
+ */
+/*              sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2        */
+/*fin*/    { sIV, sIV, sFW, sFW, sLA, sLA, sLA, sTW, sCL, sIV },
+/*
+ *        sSS -> sIV        Server might not send FIN in this state.
+ *        sS2 -> sIV
+ *        sSR -> sFW        Close started.
+ *        sES -> sFW
+ *        sFW -> sLA        FIN seen in both directions.
+ *        sCW -> sLA
+ *        sLA -> sLA        Retransmitted FIN.
+ *        sTW -> sTW
+ *        sCL -> sCL
+ */
+/*              sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2        */
+/*ack*/           { sIV, sIG, sSR, sES, sCW, sCW, sTW, sTW, sCL, sIG },
+/*
+ *        sSS -> sIG        Might be a half-open connection.
+ *        sS2 -> sIG
+ *        sSR -> sSR        Might answer late resent SYN.
+ *        sES -> sES        :-)
+ *        sFW -> sCW        Normal close request answered by ACK.
+ *        sCW -> sCW
+ *        sLA -> sTW        Last ACK detected.
+ *        sTW -> sTW        Retransmitted last ACK.
+ *        sCL -> sCL
+ */
+/*              sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2        */
+/*rst*/    { sIV, sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL },
+/*none*/   { sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV, sIV }
+        }
 };
+
 
 static bool tcp_pkt_to_tuple(const struct sk_buff *skb, unsigned int dataoff,
 			     struct nf_conntrack_tuple *tuple)
@@ -396,9 +508,10 @@ static bool tcp_in_window(const struct nf_conn *ct,
 		ack = sack = receiver->td_end;
 	}
 
-	if (seq == end
-	    && (!tcph->rst
-		|| (seq == 0 && state->state == TCP_CONNTRACK_SYN_SENT)))
+	if (tcph->rst && seq == 0 && state->state == TCP_CONNTRACK_SYN_SENT)
+		/*
+		 * RST sent answering SYN.
+		 */
 		seq = end = sender->td_end;
 
 	pr_debug("tcp_in_window: ");
