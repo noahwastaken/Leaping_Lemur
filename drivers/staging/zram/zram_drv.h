@@ -38,6 +38,18 @@ struct zobj_header {
 #endif
 };
 
+/*
+ * Stored at beginning of each compressed object.
+ *
+ * It stores back-reference to table entry which points to this
+ * object. This is required to support memory defragmentation.
+ */
+struct zobj_header {
+#if 0
+	u32 table_idx;
+#endif
+};
+
 /*-- Configurable parameters */
 
 /* Default zram disk size: 25% of total RAM */

@@ -1474,6 +1474,9 @@ static const struct usb_device_id acm_ids[] = {
 	{ USB_DEVICE(0x0572, 0x1329), 
 	.driver_info = NO_UNION_NORMAL, 
 	},
+	{ USB_DEVICE(0x0572, 0x1340), /* Conexant CX93010-2x UCMxx */
+	.driver_info = NO_UNION_NORMAL,
+	},
 	{ USB_DEVICE(0x1bbb, 0x0003), 
 	.driver_info = NO_UNION_NORMAL, 
 	},
