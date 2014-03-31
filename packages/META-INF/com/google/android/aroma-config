@@ -34,7 +34,7 @@ ini_set("rom_name",             "Leaping Lemur");
 ini_set("rom_version",          "2.3");
 ini_set("rom_author",           "Tal Noah");
 ini_set("rom_device",           "Sprint HTC One");
-ini_set("rom_date",             "Mar 29, 2014");
+ini_set("rom_date",             "Mar 30, 2014");
 
 ini_set("force_colorspace","rgba");
 ini_set("dp","6");
@@ -207,6 +207,33 @@ selectbox(
   "Undervolt (725 min)","",0
 );
 
+
+selectbox(
+  "Disk Settings","","","disk.prop",
+
+  "Select i/o scheduler","",2,
+  "CFQ","(stock)",0,
+  "ROW","(default)",1,
+  "DEADLINE","",0,
+  "FIOPS","",0,
+  "SIO","",0,
+  "BFQ","",0,
+  "ZEN","",0,
+  "VR","",0,
+  "NOOP","",0
+);
+
+
+selectbox(
+  "Disk Settings","","","disk2.prop",
+  
+  "Select readahead buffer size","",2,
+  "512","(stock)",1,
+  "1024","",0,
+  "2048","",0,
+  "4096","",0
+);
+
 selectbox(
   "Select maximum GPU frequency","\n","@personalize","gpu.prop",
   "400Mhz","(stock)",0,
@@ -243,11 +270,12 @@ selectbox(
 
 checkbox(
   "Other settings","Select the mods you want to install\n","@personalize","mods.prop",
-  "Enable Logo2menu","Use HTC logo as menu button",1,
-  "Enable Button Light Notification","",1,
+  "Enable Logo2menu","Use HTC logo as menu button",0,
+  "Enable Button Light Notification","",0,
   "Enable USB fastcharge","",0,
+  "Enable Dynamic Fsync","",0,
   "Disable HTC color enhancement","truer color",0,
-  "Enable graphics boost","Better gaming performance",1,
+  "Enable graphics boost","Better gaming performance",0,
   "Disable HTC pnpmgr","HTC pnpmgr ensures smooth ui, recommend leaving it enabled",0,
   "Optimized Bionic Libraries","For GPE users only",0,
   "Enable exFAT support","",0
@@ -255,15 +283,15 @@ checkbox(
   
 checkbox(
   "Sleep/wake settings","Select the mods you want to install","@personalize","sw.prop",
-  "Sweep2Wake","Sweep across buttons to sleep/wake phone",1,
+  "Sweep2Wake","Sweep across buttons to sleep/wake phone",0,
   "Sweep2Sleep Only","Sweep across buttons to sleep phone",0,
-  "DoubleTap2Wake","Double tap bottom of screen to wake phone",1,
+  "DoubleTap2Wake","Double tap bottom of screen to wake phone",0,
   "DoubleTap2Wake (fullscreen)","Double tap anywhere on screen to wake phone",0,
   "Logo2Wake","Wake phone with long press of HTC logo",0,
-  "Pick2Wake","Wake phone by picking up the phone while laying horizontally",1,
-  "Flick2Wake","Wake phone by flicking your phone with your wrist",1,
-  "Flick2Wake","Put your phone to sleep by flicking your phone with your wrist",0,
-  "Pocket detection","Disables sleep/wake functions in pocket",1
+  "Pick2Wake","Wake phone by picking up the phone while laying horizontally",0,
+  "Flick2Wake","Wake phone by flicking your phone with your wrist",0,
+  "Flick2Sleep","Put your phone to sleep by flicking your phone with your wrist",0,
+  "Pocket detection","Disables sleep/wake functions in pocket",0
 );
 
 if file_getprop("/tmp/aroma/sw.prop","item.0.1") == "1" && file_getprop("/tmp/aroma/sw.prop","item.0.2") == "1"
@@ -295,7 +323,8 @@ if file_getprop("/tmp/aroma/sw.prop","item.0.1") == "1" ||
   file_getprop("/tmp/aroma/sw.prop","item.0.5") == "1" ||
   file_getprop("/tmp/aroma/sw.prop","item.0.6") == "1" ||
   file_getprop("/tmp/aroma/sw.prop","item.0.7") == "1" ||
-  file_getprop("/tmp/aroma/sw.prop","item.0.8") == "1"
+  file_getprop("/tmp/aroma/sw.prop","item.0.8") == "1" ||
+  file_getprop("/tmp/aroma/sw.prop","item.0.9") == "1"
 then
 selectbox(
   "Sleep/wake vibration settings","Set the amount of vibration for sweep2wake/logo2wake/doubletap2wake/flick2wake/pick2wake\n","@personalize","vibrate.prop",

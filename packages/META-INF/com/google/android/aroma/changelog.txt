@@ -1,9 +1,13 @@
-Third Releae [3/29/14]
+Third Releae [3/30/14]
 -Reverted back to Linux verion 3.4.10
 -Intelliplug (intelligent hotplugging by faux123)
 -memcpy, memmove, copy_page optimization 
 -enabled MOTOROLA MEMUTILS OPT
 -reverted fm radio fix
+-Added option to choose io scheduler in aroma
+-Added option to choose readahead buffer size in aroma
+-Added option to enable or disable Dynamic Fsync in aroma\
+-Fixed F2W/F2S and P2W options in aroma
 -Sound Mods
 
 Second Release [3/27/14]

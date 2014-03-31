@@ -128,7 +128,6 @@ else
   echo "COLOR_ENHANCE=1" >> $CONFIGFILE;
 fi
 
-
 #Graphics Boost
 GBOOST=`grep "item.0.5" /tmp/aroma/mods.prop | cut -d '=' -f2`
 echo -e "\n\n##### Graphics Boost Settings ######\n# 1 to enable\n# 0 to disable\n" >> $CONFIGFILE
@@ -154,6 +153,15 @@ if [ $EXFAT = 1 ]; then
   echo "BIONIC=1" >> $CONFIGFILE;
 else
   echo "BIONIC=0" >> $CONFIGFILE;
+fi
+
+#Dynamic Fsync
+DYN_FSYNC=`grep "item.0.9" /tmp/aroma/mods.prop | cut -d '=' -f2`
+echo -e "\n\n##### Dynamic Fsync ######\n# 1 to enable Dynamic Fsync \n# 0 to disable Dynamic Fsync\n" >> $CONFIGFILE
+if [ $DYN_FSYNC = 1 ]; then
+  echo "DYN_FSYNC=1" >> $CONFIGFILE;
+else
+  echo "DYN_FSYNC=0" >> $CONFIGFILE;
 fi
 
 #GPU OC
@@ -213,6 +221,44 @@ if [ $GPU_GOV = 2 ]; then
   echo "GPU_GOV=2" >> $CONFIGFILE;
 else
   echo "GPU_GOV=1" >> $CONFIGFILE;
+fi
+
+#i/o scheduler
+SCHED=`cat /tmp/aroma/disk.prop | cut -d '=' -f2`
+echo -e "\n\n##### i/o Scheduler #####\n# 1 CFQ (stock)" >> $CONFIGFILE
+echo -e "# 2 ROW (default)\n# 3 DEADLINE\n# 4 FIOPS\n# 5 SIO\n# 6 BFQ\n# 7 ZEN\n# 8 VR\n# 9 NOOP\n" >> $CONFIGFILE
+if [ $SCHED = 1 ]; then
+  echo "SCHED=1" >> $CONFIGFILE;
+elif [ $SCHED = 2 ]; then
+  echo "SCHED=2" >> $CONFIGFILE;
+elif [ $SCHED = 3 ]; then
+  echo "SCHED=3" >> $CONFIGFILE;
+elif [ $SCHED = 4 ]; then
+  echo "SCHED=4" >> $CONFIGFILE;
+elif [ $SCHED = 5 ]; then
+  echo "SCHED=5" >> $CONFIGFILE;
+elif [ $SCHED = 6 ]; then
+  echo "SCHED=6" >> $CONFIGFILE;
+elif [ $SCHED = 7 ]; then
+  echo "SCHED=7" >> $CONFIGFILE;
+elif [ $SCHED = 8 ]; then
+  echo "SCHED=8" >> $CONFIGFILE;
+elif [ $SCHED = 9 ]; then
+  echo "SCHED=9" >> $CONFIGFILE;
+fi
+
+#Readahead buffer size
+READAHEAD=`cat /tmp/aroma/disk2.prop | cut -d '=' -f2`
+echo -e "\n\n##### Readahead Buffer Size #####\n# 512 (stock)" >> $CONFIGFILE
+echo -e "# 1024\n# 2048\n# 4096\n" >> $CONFIGFILE
+if [ $READAHEAD = 1 ]; then
+  echo "READAHEAD=512" >> $CONFIGFILE;
+elif [ $READAHEAD = 2 ]; then
+  echo "READAHEAD=1024" >> $CONFIGFILE;
+elif [ $READAHEAD = 3 ]; then
+  echo "READAHEAD=2048" >> $CONFIGFILE;
+elif [ $READAHEAD = 4 ]; then
+  echo "READAHEAD=4096" >> $CONFIGFILE;
 fi
 
 #CPU Governor

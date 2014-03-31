@@ -237,28 +237,28 @@ fi
 
 #Set PICK2WAKE
 if [ "`grep PICK2WAKE=1 $LEMUR_CONF`" ]; then
-  echo 1 > /sys/android_touch/pick2wake;
+  echo 1 > /sys/devices/virtual/htc_g_sensor/g_sensor/pick2wake;
   echo Pick2Wake enabled >> $LEMUR_LOGFILE;
 else
-  echo 0 > /sys/android_touch/pick2wake;
+  echo 0 > /sys/devices/virtual/htc_g_sensor/g_sensor/pick2wake;
   echo Pick2Wake disabled >> $LEMUR_LOGFILE;
 fi
 
 #Set FLICK2WAKE
 if [ "`grep FLICK2WAKE=1 $LEMUR_CONF`" ]; then
-  echo 1 > /sys/android_touch/flick2wake;
+  echo 1 > /sys/devices/virtual/htc_g_sensor/g_sensor/flick2wake;
   echo Flick2Wake enabled >> $LEMUR_LOGFILE;
 else
-  echo 0 > /sys/android_touch/flick2wake;
+  echo 0 > /sys/devices/virtual/htc_g_sensor/g_sensor/flick2wake;
   echo Flick2Wake disabled >> $LEMUR_LOGFILE;
 fi
 
 #Set FLICK2SLEEP
 if [ "`grep FLICK2SLEEP=1 $LEMUR_CONF`" ]; then
-  echo 1 > /sys/android_touch/flick2sleep;
+  echo 1 > /sys/devices/virtual/htc_g_sensor/g_sensor/flick2sleep;
   echo Flick2Sleep enabled >> $LEMUR_LOGFILE;
 else
-  echo 0 > /sys/android_touch/flick2sleep;
+  echo 0 > /sys/devices/virtual/htc_g_sensor/g_sensor/flick2sleep;
   echo Flick2Sleep disabled >> $LEMUR_LOGFILE;
 fi
 
@@ -310,6 +310,15 @@ elif [ "`grep COLOR_ENHANCE=1 $LEMUR_CONF`" ]; then
   echo HTC color enhance enabled >> $LEMUR_LOGFILE;
 fi
 
+#Dynamic Fsync
+if [ "`grep DYN_FSYNC=0 $LEMUR_CONF`" ]; then
+  echo 0 > /sys/kernel/dyn_fsync/Dyn_fsync_active;
+  echo Dynamic Fsync disabled >> $LEMUR_LOGFILE;
+elif [ "`grep DYN_FSYNC=1 $LEMUR_CONF`" ]; then
+  echo 1 > /sys/kernel/dyn_fsync/Dyn_fsync_active;
+  echo Dynamic Fsync enabled >> $LEMUR_LOGFILE;
+fi
+
 #fstrim
 fstrim -v /cache | tee -a $LEMUR_LOGFILE;
 fstrim -v /data | tee -a $LEMUR_LOGFILE;
@@ -355,6 +364,42 @@ fi
 if [ -e /system/bin/pnpmgr ]; then
   chmod 444 /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/max_gpuclk;
 fi
+
+#io scheduler settings
+SCHED=`grep "SCHED" $LEMUR_CONF | cut -d '=' -f2`
+if [ "`grep SCHED=1 $LEMUR_CONF`" ]; then
+  echo cfq > /sys/block/mmcblk0/queue/scheduler;
+  echo CFQ io scheduler >> $LEMUR_LOGFILE;
+elif [ "`grep SCHED=3 $LEMUR_CONF`" ]; then
+  echo deadline > /sys/block/mmcblk0/queue/scheduler;
+  echo DEADLINE io scheduler >> $LEMUR_LOGFILE;
+elif [ "`grep SCHED=4 $LEMUR_CONF`" ]; then
+  echo fiops > /sys/block/mmcblk0/queue/scheduler;
+  echo FIOPS io scheduler >> $LEMUR_LOGFILE;
+elif [ "`grep SCHED=5 $LEMUR_CONF`" ]; then
+  echo sio > /sys/block/mmcblk0/queue/scheduler;
+  echo SIO io scheduler >> $LEMUR_LOGFILE;
+elif [ "`grep SCHED=6 $LEMUR_CONF`" ]; then
+  echo bfq> /sys/block/mmcblk0/queue/scheduler;
+  echo BFQ io scheduler >> $LEMUR_LOGFILE;
+elif [ "`grep SCHED=7 $LEMUR_CONF`" ]; then
+  echo zen > /sys/block/mmcblk0/queue/scheduler;
+  echo ZEN io scheduler >> $LEMUR_LOGFILE;
+elif [ "`grep SCHED=8 $LEMUR_CONF`" ]; then
+  echo vr > /sys/block/mmcblk0/queue/scheduler;
+  echo VR io scheduler >> $LEMUR_LOGFILE;
+elif [ "`grep SCHED=9 $LEMUR_CONF`" ]; then
+  echo noop > /sys/block/mmcblk0/queue/scheduler;
+  echo NOOP io scheduler >> $LEMUR_LOGFILE;
+else
+  echo row > /sys/block/mmcblk0/queue/scheduler;
+  echo ROW io scheduler >> $LEMUR_LOGFILE;
+fi
+
+#Readahead settings
+READAHEAD=`grep "READAHEAD" $LEMUR_CONF | cut -d '=' -f2`
+echo $READAHEAD > /sys/block/mmcblk0/queue/read_ahead_kb
+echo Readahead size\: $READAHEAD >> $LEMUR_LOGFILE;
 
 #gboost
 if [ "`grep GBOOST=0 $LEMUR_CONF`" ]; then
