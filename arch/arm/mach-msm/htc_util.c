@@ -68,6 +68,8 @@ struct process_monitor_statistic {
 
 int pm_monitor_enabled = 0; 
 
+extern unsigned int system_rev;
+
 #if USE_STATISTICS_STRATEGY_CONTINUOUS_3
 static struct current_pid_found current_pid_found_array[NUM_BUSY_THREAD_CHECK];
 static struct process_monitor_statistic process_monitor_continuous_3_array[NUM_BUSY_THREAD_CHECK];
