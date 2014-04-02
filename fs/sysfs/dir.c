@@ -350,7 +350,7 @@ static char *sysfs_pathname(struct sysfs_dirent *sd, char *path)
 		sysfs_pathname(sd->s_parent, path);
         strlcat(path, "/", PATH_MAX);
 	}
-	strcat(path, sd->s_name, PATH_MAX);
+	strcat(path, sd->s_name);
 	return path;
 }
 
