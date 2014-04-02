@@ -565,6 +565,9 @@ asmlinkage void __init start_kernel(void)
 	acpi_early_init(); 
 	sfi_init_late();
 
+	if (efi_enabled)
+		efi_free_boot_services();
+
 	ftrace_init();
 
 	
