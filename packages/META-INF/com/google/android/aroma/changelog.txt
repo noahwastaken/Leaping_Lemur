@@ -1,4 +1,16 @@
-Fourth Release [4/2/2014]
+[4/3/2014]
+-Implement writer lock-stealing for better scalability
+-Improve touchscreen sensitivity
+-Do not hardcode pressure & width
+-random: allow architectures to optionally define random_get_entropy() 
+-random: adjustments, modifications
+-softirq: reduce latencies
+-timer: optimize apply_slack() 
+-ARCH: makefile adjustments (morfic and poondog)
+-scripts: add compiler time variables (ziggy471)
+-SCHED: LOAD_FREQ (4*HZ+61)
+
+[4/2/2014]
 -Linux version 3.4.20
 -improved fairness efficiency 
 -disabled shadow_writes
@@ -6,7 +18,7 @@ Fourth Release [4/2/2014]
 -Optimize find_busiest_queue()
 -Removed PAGE_ALLOC_COSTLY_ORDER for a 3% boost
 
-Third Releae [3/30/14]
+[3/30/14]
 -Reverted back to Linux verion 3.4.10
 -Intelliplug (intelligent hotplugging by faux123)
 -memcpy, memmove, copy_page optimization 
@@ -18,7 +30,7 @@ Third Releae [3/30/14]
 -Fixed F2W/F2S and P2W options in aroma
 -Sound Mods
 
-Second Release [3/27/14]
+[3/27/14]
 -FS: import F2FS
 -reduce and fix wakelock issues
 -redo synaptic algorithms
@@ -31,7 +43,7 @@ Second Release [3/27/14]
 -enable input boost and add some tunables in ondemand
 -fix logo2wake deep sleep
 
-Initial Release [2/24/14]
+[2/24/14]
 
 Features:
 
