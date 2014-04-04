@@ -1,4 +1,4 @@
-[4/3/2014]
+[4/4/2014]
 -Implement writer lock-stealing for better scalability
 -Improve touchscreen sensitivity
 -Do not hardcode pressure & width
@@ -9,6 +9,7 @@
 -ARCH: makefile adjustments (morfic and poondog)
 -scripts: add compiler time variables (ziggy471)
 -SCHED: LOAD_FREQ (4*HZ+61)
+-fix graphical slowness on wakeup
 
 [4/2/2014]
 -Linux version 3.4.20
