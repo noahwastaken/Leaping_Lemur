@@ -90,7 +90,7 @@ static uint32_t lowmem_only_kswapd_sleep = 1;
 
 static int test_task_flag(struct task_struct *p, int flag)
 {
-	struct task_struct *t = p;
+	struct task_struct *t;
 
 	for_each_thread(p,t) {
 		task_lock(t);
