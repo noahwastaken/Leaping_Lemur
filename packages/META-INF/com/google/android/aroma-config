@@ -44,7 +44,7 @@ fontresload( "1", "ttf/Roboto-Regular.ttf", "18" );
 
 splash(3000, "lemur");
 
-theme("sense");
+theme("ics");
 
 viewbox(
     "Welcome",
