@@ -1,3 +1,12 @@
+[4/6/2014]
+-adaptation to full neon-vfpv4 support
+-ext4 mods and tuning
+-random32 and prandom mods
+-fix performance regression in O_DIRECT writes to md block devices
+-writeback: fix occasional slow sync(1) 
+-ext4: fix memory leak in xattr
+-intelliactive: make touch boost interface generic
+
 [4/4/2014]
 -Implement writer lock-stealing for better scalability
 -Improve touchscreen sensitivity
