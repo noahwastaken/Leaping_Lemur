@@ -45,11 +45,8 @@ static cputime64_t get_iowait_time(int cpu)
 
 static u64 get_idle_time(int cpu)
 {
-	u64 idle, idle_time = -1ULL;
+	u64 idle, idle_time = get_cpu_idle_time_us(cpu, NULL);
 
-	if (cpu_online(cpu))
-		idle_time = get_cpu_idle_time_us(cpu, NULL);
- 
 	if (idle_time == -1ULL)
 		
 		idle = kcpustat_cpu(cpu).cpustat[CPUTIME_IDLE];
