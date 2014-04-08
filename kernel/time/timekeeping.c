@@ -706,11 +706,11 @@ static cycle_t logarithmic_accumulation(cycle_t offset, int shift,
 	u64 nsecps = (u64)NSEC_PER_SEC << timekeeper.shift;
 	u64 raw_nsecs;
 
-	
+	/* If the offset is smaller than a shifted interval, do nothing */
 	if (offset < timekeeper.cycle_interval<<shift)
 		return offset;
 
-	
+	/* Accumulate one shifted interval */
 	offset -= timekeeper.cycle_interval << shift;
 	timekeeper.clock->cycle_last += timekeeper.cycle_interval << shift;
 
@@ -723,10 +723,10 @@ static cycle_t logarithmic_accumulation(cycle_t offset, int shift,
 		timekeeper.xtime.tv_sec += leap;
 		timekeeper.wall_to_monotonic.tv_sec -= leap;
 		if (leap)
-			clock_set = 1;
+			*clock_set = 1;
 	}
 
-	
+	/* Accumulate raw time */
 	raw_nsecs = (u64)timekeeper.raw_interval << shift;
 	raw_nsecs += timekeeper.raw_time.tv_nsec;
 	if (raw_nsecs >= NSEC_PER_SEC) {
@@ -736,16 +736,20 @@ static cycle_t logarithmic_accumulation(cycle_t offset, int shift,
 	}
 	timekeeper.raw_time.tv_nsec = raw_nsecs;
 
-	
+	/* Accumulate error between NTP and clock interval */
 	timekeeper.ntp_error += ntp_tick_length() << shift;
 	timekeeper.ntp_error -=
 	    (timekeeper.xtime_interval + timekeeper.xtime_remainder) <<
 				(timekeeper.ntp_error_shift + shift);
 
 	return offset;
+
 }
 
-
+/**
+ * update_wall_time - Uses the current clocksource to increment the wall time
+ *
+ */
 static void update_wall_time(void)
 {
 	struct clocksource *clock;
@@ -756,7 +760,7 @@ static void update_wall_time(void)
 
 	write_seqlock_irqsave(&timekeeper.lock, flags);
 
-	
+	/* Make sure we're fully resumed: */
 	if (unlikely(timekeeping_suspended))
 		goto out;
 
@@ -770,12 +774,20 @@ static void update_wall_time(void)
 	/* Check if there's really nothing to do */
 	if (offset < timekeeper.cycle_interval)
 		goto out;
+
 	timekeeper.xtime_nsec = (s64)timekeeper.xtime.tv_nsec <<
 						timekeeper.shift;
-
+	/*
+	 * With NO_HZ we may have to accumulate many cycle_intervals
+	 * (think "ticks") worth of time at once. To do this efficiently,
+	 * we calculate the largest doubling multiple of cycle_intervals
+	 * that is smaller than the offset.  We then accumulate that
+	 * chunk in one go, and then try to consume the next smaller
+	 * doubled multiple.
+	 */
 	shift = ilog2(offset) - ilog2(timekeeper.cycle_interval);
 	shift = max(0, shift);
-	
+	/* Bound shift to one less than what overflows tick_length */
 	maxshift = (64 - (ilog2(ntp_tick_length())+1)) - 1;
 	shift = min(shift, maxshift);
 	while (offset >= timekeeper.cycle_interval) {
@@ -784,9 +796,25 @@ static void update_wall_time(void)
 			shift--;
 	}
 
-	
+	/* correct the clock when NTP error is too big */
 	timekeeping_adjust(offset);
 
+	/*
+	 * Since in the loop above, we accumulate any amount of time
+	 * in xtime_nsec over a second into xtime.tv_sec, its possible for
+	 * xtime_nsec to be fairly small after the loop. Further, if we're
+	 * slightly speeding the clocksource up in timekeeping_adjust(),
+	 * its possible the required corrective factor to xtime_nsec could
+	 * cause it to underflow.
+	 *
+	 * Now, we cannot simply roll the accumulated second back, since
+	 * the NTP subsystem has been notified via second_overflow. So
+	 * instead we push xtime_nsec forward by the amount we underflowed,
+	 * and add that amount into the error.
+	 *
+	 * We'll correct this error next time through this function, when
+	 * xtime_nsec is not as small.
+	 */
 	if (unlikely((s64)timekeeper.xtime_nsec < 0)) {
 		s64 neg = -(s64)timekeeper.xtime_nsec;
 		timekeeper.xtime_nsec = 0;
@@ -794,6 +822,10 @@ static void update_wall_time(void)
 	}
 
 
+	/*
+	 * Store full nanoseconds into xtime after rounding it up and
+	 * add the remainder to the error difference.
+	 */
 	timekeeper.xtime.tv_nsec = ((s64)timekeeper.xtime_nsec >>
 						timekeeper.shift) + 1;
 	timekeeper.xtime_nsec -= (s64)timekeeper.xtime.tv_nsec <<
@@ -801,6 +833,10 @@ static void update_wall_time(void)
 	timekeeper.ntp_error +=	timekeeper.xtime_nsec <<
 				timekeeper.ntp_error_shift;
 
+	/*
+	 * Finally, make sure that after the rounding
+	 * xtime.tv_nsec isn't larger than NSEC_PER_SEC
+	 */
 	if (unlikely(timekeeper.xtime.tv_nsec >= NSEC_PER_SEC)) {
 		int leap;
 		timekeeper.xtime.tv_nsec -= NSEC_PER_SEC;
@@ -809,7 +845,7 @@ static void update_wall_time(void)
 		timekeeper.xtime.tv_sec += leap;
 		timekeeper.wall_to_monotonic.tv_sec -= leap;
 		if (leap)
-			*clock_set = 1;
+			clock_set = 1;
 	}
 
 	timekeeping_update(false);
@@ -820,6 +856,7 @@ out:
 	if (clock_set)
 		clock_was_set_delayed();
 }
+
 
 void getboottime(struct timespec *ts)
 {
