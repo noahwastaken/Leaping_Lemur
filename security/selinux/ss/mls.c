@@ -155,7 +155,7 @@ int mls_level_isvalid(struct policydb *p, struct mls_level *l)
 		return 0;
 
 	/*
-	 * Return 1 iff all the bits set in l->cat are also be set in
+	 * Return 1 if all the bits set in l->cat are also be set in
 	 * levdatum->level->cat and no bit in l->cat is larger than
 	 * p->p_cats.nprim.
 	 */
