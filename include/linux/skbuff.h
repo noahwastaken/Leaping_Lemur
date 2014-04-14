@@ -302,7 +302,7 @@ struct sk_buff {
 	union {
 		__u32		mark;
 		__u32		dropcount;
-		__u32		reserved_tailroom;
+		__u32		avail_size;
 	};
 
 	sk_buff_data_t		transport_header;
@@ -874,10 +874,7 @@ static inline int skb_tailroom(const struct sk_buff *skb)
 
 static inline int skb_availroom(const struct sk_buff *skb)
 {
-	if (skb_is_nonlinear(skb))
-		return 0;
-
-	return skb->end - skb->tail - skb->reserved_tailroom;
+	return skb_is_nonlinear(skb) ? 0 : skb->avail_size - skb->len;
 }
 
 static inline void skb_reserve(struct sk_buff *skb, int len)
