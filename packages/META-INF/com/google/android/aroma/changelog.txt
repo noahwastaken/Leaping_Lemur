@@ -1,3 +1,7 @@
+[4/13/2014]
+-Fix Z180 memory leak
+-PATCH: Linux 3.4.20-3.4.40
+
 [4/6/2014]
 -adaptation to full neon-vfpv4 support
 -ext4 mods and tuning
