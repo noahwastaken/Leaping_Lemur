@@ -1,6 +1,10 @@
-[4/13/2014]
+[4/14/2014]
 -Fix Z180 memory leak
--PATCH: Linux 3.4.20-3.4.40
+-Linux 3.4.20-3.4.40
+-switch to -Ofast
+-add an API to log wakeup reasons 
+-fix compile warnings in log_wakeup_reason 
+-switch to arm-cortex_a15-linux-gnueabihf-linaro_4.8.3-2014.02
 
 [4/6/2014]
 -adaptation to full neon-vfpv4 support
