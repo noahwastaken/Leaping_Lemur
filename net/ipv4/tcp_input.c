@@ -2784,9 +2784,13 @@ static int tcp_process_frto(struct sock *sk, int flag)
 		}
 	} else {
 		if (!(flag & FLAG_DATA_ACKED) && (tp->frto_counter == 1)) {
-			
-			tp->snd_cwnd = min(tp->snd_cwnd,
-					   tcp_packets_in_flight(tp));
+			if (!tcp_packets_in_flight(tp)) {
+				tcp_enter_frto_loss(sk, 2, flag);
+				return true;
+			}
+
+ 			/* Prevent sending of new data. */
+					   (tcp_packets_in_flight(tp));
 			return 1;
 		}
 
