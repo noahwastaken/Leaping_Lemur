@@ -1579,9 +1579,9 @@ YAMAHA_DEVICE(0x7010, "UB99"),
 	
 	USB_DEVICE_VENDOR_SPEC(0x0582, 0x010f),
 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-		
-		
-		.ifnum = 1,
+		/* .vendor_name = "Roland", */
+ 		/* .product_name = "A-PRO", */
+		.ifnum = 0,
 		.type = QUIRK_MIDI_FIXED_ENDPOINT,
 		.data = & (const struct snd_usb_midi_endpoint_info) {
 			.out_cables = 0x0003,

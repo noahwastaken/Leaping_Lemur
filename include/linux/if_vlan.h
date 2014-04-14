@@ -241,7 +241,7 @@ static inline void vlan_set_encap_proto(struct sk_buff *skb,
 					struct vlan_hdr *vhdr)
 {
 	__be16 proto;
-	unsigned char *rawp;
+	unsigned short *rawp;
 
 
 	proto = vhdr->h_vlan_encapsulated_proto;
@@ -250,8 +250,8 @@ static inline void vlan_set_encap_proto(struct sk_buff *skb,
 		return;
 	}
 
-	rawp = skb->data;
-	if (*(unsigned short *) rawp == 0xFFFF)
+	rawp = (unsigned short *)(vhdr + 1);
+	if (*rawp == 0xFFFF)
 		skb->protocol = htons(ETH_P_802_3);
 	else
 		skb->protocol = htons(ETH_P_802_2);

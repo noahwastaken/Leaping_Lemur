@@ -109,7 +109,7 @@ struct sk_buff *__skb_recv_datagram(struct sock *sk, unsigned flags,
 #ifdef CONFIG_HTC_NETWORK_MODIFY
 				if (*off >= skb->len && skb->len) {
 #else
-				if (*off >= skb->len) {
+				if (*off >= skb->len && skb->len) {
 #endif
 					*off -= skb->len;
 					continue;
