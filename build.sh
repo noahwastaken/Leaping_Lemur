@@ -30,7 +30,7 @@
   m=$k/out/$c/system/lib/modules
   z=$c-$today
 
-TOOLCHAIN=/home/tal/linaro-cortex-toolchains/arm-cortex_a15-linux-gnueabihf-linaro_4.7.4-2014.01/bin/arm-cortex_a15-linux-gnueabihf-
+TOOLCHAIN=/home/tal/linaro-cortex-toolchains/arm-cortex_a15-linux-gnueabihf-linaro_4.8.3-2014.02/bin/arm-cortex_a15-linux-gnueabihf-
 export ARCH=arm
 export SUBARCH=arm
 
