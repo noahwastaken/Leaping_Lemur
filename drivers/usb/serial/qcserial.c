@@ -55,8 +55,8 @@ static const struct usb_device_id id_table[] = {
 	{DEVICE_G1K(0x05c6, 0x9201)},	
 	{DEVICE_G1K(0x05c6, 0x9221)},	
 	{DEVICE_G1K(0x05c6, 0x9231)},	
-	{DEVICE_G1K(0x1f45, 0x0001)},	
-
+	{DEVICE_G1K(0x1f45, 0x0001)},
+	{DEVICE_G1K(0x1bc7, 0x900e)},	/* Telit Gobi QDL device */
 	
 	{USB_DEVICE(0x1410, 0xa010)},	
 	{USB_DEVICE(0x1410, 0xa011)},	
