@@ -47,21 +47,21 @@
 static long ratelimit_pages = 32;
 
 
-int dirty_background_ratio = 10;
+int dirty_background_ratio = 5;
 
 unsigned long dirty_background_bytes;
 
 int vm_highmem_is_dirtyable;
 
-int vm_dirty_ratio = 20;
+int vm_dirty_ratio = 10;
 
 unsigned long vm_dirty_bytes;
 
-unsigned int dirty_writeback_interval = 5 * 100; 
+unsigned int dirty_writeback_interval = 3 * 100; 
 
 EXPORT_SYMBOL_GPL(dirty_writeback_interval);
 
-unsigned int dirty_expire_interval = 30 * 100; 
+unsigned int dirty_expire_interval = 50; /* centiseconds */
 
 int block_dump;
 
