@@ -4,7 +4,6 @@
 -removing media_tuner @poondog
 -Optimize build_sched_domains() for saving first SD node
 -Create for_each_sd_topology()
--update smartmax cpu governor
 -remove handset pop-noise
 -Add slimbus device driver unregistration function
 -Handle channel control correctly if controller manages BW
