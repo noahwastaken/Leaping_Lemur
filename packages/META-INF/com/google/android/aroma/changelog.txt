@@ -1,3 +1,19 @@
+[4/15/2014]
+-introduce PRESERVATIVE governor by @bedalus
+-increase BUS frequencies
+-removing media_tuner @poondog
+-Optimize build_sched_domains() for saving first SD node
+-Create for_each_sd_topology()
+-update smartmax cpu governor
+-remove handset pop-noise
+-Add slimbus device driver unregistration function
+-Handle channel control correctly if controller manages BW
+-Fix pop noise seen with touch tone during playback
+-Control interface clock if it's specified
+-Add PCM creation API for internal PCMs
+-use generic atomic_dec-based implementation for ARMv6+
+-Reduce overhead under high-freq idling patterns
+
 [4/14/2014]
 -Fix Z180 memory leak
 -Linux 3.4.20-3.4.40
