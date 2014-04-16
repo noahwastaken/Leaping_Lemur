@@ -1,3 +1,7 @@
+[4/16/2014]
+-Added CPUQuiet Power Management by @maxwen
+-introduce OndemandPLUS governor
+
 [4/15/2014]
 -introduce PRESERVATIVE governor by @bedalus
 -increase BUS frequencies
