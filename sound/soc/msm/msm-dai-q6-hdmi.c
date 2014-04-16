@@ -220,13 +220,13 @@ static struct snd_soc_dai_ops msm_dai_q6_hdmi_ops = {
 
 static struct snd_soc_dai_driver msm_dai_q6_hdmi_hdmi_rx_dai = {
 	.playback = {
-		.rates = SNDRV_PCM_RATE_48000,
+		.rates = SNDRV_PCM_RATE_96000,
 		.formats = (SNDRV_PCM_FMTBIT_S16_LE |
 				SNDRV_PCM_FMTBIT_S24_LE),
 		.channels_min = 2,
 		.channels_max = 6,
-		.rate_max =     48000,
-		.rate_min =	48000,
+		.rate_max =     96000,
+		.rate_min =	96000,
 	},
 	.ops = &msm_dai_q6_hdmi_ops,
 	.probe = msm_dai_q6_hdmi_dai_probe,

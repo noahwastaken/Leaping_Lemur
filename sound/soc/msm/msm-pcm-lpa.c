@@ -59,9 +59,9 @@ static struct snd_pcm_hardware msm_pcm_hardware = {
 				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
 	.formats =              SNDRV_PCM_FMTBIT_S16_LE
 				| SNDRV_PCM_FMTBIT_S24_LE,
-	.rates =                SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT,
+	.rates =                SNDRV_PCM_RATE_8000_96000 | SNDRV_PCM_RATE_KNOT,
 	.rate_min =             8000,
-	.rate_max =             48000,
+	.rate_max =             96000,
 	.channels_min =         1,
 	.channels_max =         2,
 	.buffer_bytes_max =     1024 * 1024,
@@ -73,7 +73,7 @@ static struct snd_pcm_hardware msm_pcm_hardware = {
 };
 
 static unsigned int supported_sample_rates[] = {
-	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
+	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 96000
 };
 
 static struct snd_pcm_hw_constraint_list constraints_sample_rates = {
