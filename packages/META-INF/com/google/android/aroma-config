@@ -31,7 +31,7 @@
 # * AROMA Temporary Dir = /tmp/aroma/
 
 ini_set("rom_name",             "Leaping Lemur");
-ini_set("rom_version",          "Build #17");
+ini_set("rom_version",          "Build #18");
 ini_set("rom_author",           "Tal Noah");
 ini_set("rom_device",           "Sprint HTC One");
 ini_set("rom_date",             "Apr 15, 2014");
@@ -189,6 +189,7 @@ selectbox(
   "interactivex2","",0,
   "lagfree","",0,
   "lionheart","",0,
+  "preservative","",0,
   "smartass2","",0,
   "smartassH3","",0,
   "smartmax","",0,

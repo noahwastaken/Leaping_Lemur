@@ -264,7 +264,7 @@ fi
 #CPU Governor
 CPU_GOV=`cat /tmp/aroma/cpugov.prop | cut -d '=' -f2`
 echo -e "\n\n##### CPU Governor #####\n# 1 ondemand (default)" >> $CONFIGFILE
-echo -e "\n# 2 abyssplugv2\n# 3 asswax\n# 4 badass\n# 5 dancedance\n# 6 darkness\n# 7 intellidemand\n# 8 intelliactive\n# 9 interactivex2\n# 10 lagfree\n# 11 lionheart\n# 12 smartass2\n# 13 smartassH3\n# 14 smartmax\n# 15 savagedzen\n# 16 wheatley\n" >> $CONFIGFILE
+echo -e "\n# 2 abyssplugv2\n# 3 asswax\n# 4 badass\n# 5 dancedance\n# 6 darkness\n# 7 intellidemand\n# 8 intelliactive\n# 9 interactivex2\n# 10 lagfree\n# 11 lionheart\n# 12 preservative\n# 13 smartass2\n# 14 smartassH3\n# 15 smartmax\n# 16 savagedzen\n# 17 wheatley\n" >> $CONFIGFILE
 if [ $CPU_GOV = 2 ]; then
   echo "CPU_GOV=2" >> $CONFIGFILE;
 elif [ $CPU_GOV = 3 ]; then
@@ -295,6 +295,8 @@ elif [ $CPU_GOV = 15 ]; then
   echo "CPU_GOV=15" >> $CONFIGFILE;
 elif [ $CPU_GOV = 16 ]; then
   echo "CPU_GOV=16" >> $CONFIGFILE;
+elif [ $CPU_GOV = 17 ]; then
+  echo "CPU_GOV=17" >> $CONFIGFILE;
 else
   echo "CPU_GOV=1" >> $CONFIGFILE;
 fi
