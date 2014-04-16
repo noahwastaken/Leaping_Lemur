@@ -392,10 +392,10 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -floop-strip-mine -floop-block
 
 KBUILD_AFLAGS_KERNEL := -O3 -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr -fsingle-precision-constant -mtune=cortex-a15 -marm -mcpu=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize
-KBUILD_CFLAGS_KERNEL := -O3 -fgcse-sm -fsched-spec-load -ffast-math -mcpu=cortex-a15 -fsingle-precision-constant -mtune=cortex-a15 -mfpu=neon-vfpv4  -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -mvectorize-with-neon-quad -fgraphite-identity  -ftree-loop-distribution 
+KBUILD_CFLAGS_KERNEL := -O3 -fgcse-sm -fsched-spec-load -ffast-math -mcpu=cortex-a15 -fsingle-precision-constant -mtune=cortex-a15 -mfpu=neon-vfpv4  -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -mvectorize-with-neon-quad -fgraphite-identity -ftree-loop-distribution 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_AFLAGS_MODULE  := -DMODULE
-KBUILD_CFLAGS_MODULE  := -DMODULE -O3 -fgcse-sm -fsched-spec-load -ffast-math -mcpu=cortex-a15 -fsingle-precision-constant -mtune=cortex-a15 -mfpu=neon-vfpv4  -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -mvectorize-with-neon-quad -fgraphite-identity  -ftree-loop-distribution
+KBUILD_CFLAGS_MODULE  := -DMODULE -O3 -fgcse-sm -fsched-spec-load -ffast-math -mcpu=cortex-a15 -fsingle-precision-constant -mtune=cortex-a15 -mfpu=neon-vfpv4  -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -mvectorize-with-neon-quad -fgraphite-identity -ftree-loop-distribution
 KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
 KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
 KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
