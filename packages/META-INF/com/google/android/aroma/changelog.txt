@@ -1,6 +1,10 @@
-[4/16/2014]
+[4/17/2014]
 -Added CPUQuiet Power Management by @maxwen
 -introduce OndemandPLUS governor
+-Sound Mods (thicklizard)
+-add more linaro build flags....
+-fgraphite, -ftree-slp-vectorize, -fvect-cost-model, -ftree-partial-pre, -fipa-cp-clone,-mvectorize-with-neon-quad to name a few
+-switch to CONFIG_CC_OPTIMIZE_ALOT or -O3
 
 [4/15/2014]
 -introduce PRESERVATIVE governor by @bedalus
