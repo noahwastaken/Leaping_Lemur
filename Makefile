@@ -385,7 +385,6 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
                    -Wno-maybe-uninitialized -Wno-uninitialized \
-		   -fno-delete-null-pointer-checks \
                    -Wno-unused-variable -mno-unaligned-access \
 		   -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize \
 		   -Wno-sizeof-pointer-memaccess \
