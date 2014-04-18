@@ -71,7 +71,7 @@ struct htb_class {
 	unsigned int children;
 	struct htb_class *parent;	
 
-	int prio;		
+	u32 prio;		/* these two are used only by leaves... */		
 	int quantum;		
 
 	union {
