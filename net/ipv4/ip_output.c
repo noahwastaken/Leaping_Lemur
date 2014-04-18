@@ -91,39 +91,39 @@ static inline int ip_select_ttl(struct inet_sock *inet, struct dst_entry *dst)
 }
 
 int ip_build_and_send_pkt(struct sk_buff *skb, struct sock *sk,
-			  __be32 saddr, __be32 daddr, struct ip_options_rcu *opt)
+                          __be32 saddr, __be32 daddr, struct ip_options_rcu *opt)
 {
-	struct inet_sock *inet = inet_sk(sk);
-	struct rtable *rt = skb_rtable(skb);
-	struct iphdr *iph;
+        struct inet_sock *inet = inet_sk(sk);
+        struct rtable *rt = skb_rtable(skb);
+        struct iphdr *iph;
 
-	
-	skb_push(skb, sizeof(struct iphdr) + (opt ? opt->opt.optlen : 0));
-	skb_reset_network_header(skb);
-	iph = ip_hdr(skb);
-	iph->version  = 4;
-	iph->ihl      = 5;
-	iph->tos      = inet->tos;
-	if (ip_dont_fragment(sk, &rt->dst))
-		iph->frag_off = htons(IP_DF);
-	else
-		iph->frag_off = 0;
-	iph->ttl      = ip_select_ttl(inet, &rt->dst);
-	iph->daddr    = (opt && opt->opt.srr ? opt->opt.faddr : daddr);
-	iph->saddr    = saddr;
-	iph->protocol = sk->sk_protocol;
-	ip_select_ident(iph, &rt->dst, sk);
+        /* Build the IP header. */
+        skb_push(skb, sizeof(struct iphdr) + (opt ? opt->opt.optlen : 0));
+        skb_reset_network_header(skb);
+        iph = ip_hdr(skb);
+        iph->version  = 4;
+        iph->ihl      = 5;
+        iph->tos      = inet->tos;
+        if (ip_dont_fragment(sk, &rt->dst))
+                iph->frag_off = htons(IP_DF);
+        else
+                iph->frag_off = 0;
+        iph->ttl      = ip_select_ttl(inet, &rt->dst);
+        iph->daddr    = (opt && opt->opt.srr ? opt->opt.faddr : daddr);
+        iph->saddr    = saddr;
+        iph->protocol = sk->sk_protocol;
+        ip_select_ident(skb, &rt->dst, sk);
 
-	if (opt && opt->opt.optlen) {
-		iph->ihl += opt->opt.optlen>>2;
-		ip_options_build(skb, &opt->opt, daddr, rt, 0);
-	}
+        if (opt && opt->opt.optlen) {
+                iph->ihl += opt->opt.optlen>>2;
+                ip_options_build(skb, &opt->opt, daddr, rt, 0);
+        }
 
-	skb->priority = sk->sk_priority;
-	skb->mark = sk->sk_mark;
+        skb->priority = sk->sk_priority;
+        skb->mark = sk->sk_mark;
 
-	
-	return ip_local_out(skb);
+        /* Send it out. */
+        return ip_local_out(skb);
 }
 EXPORT_SYMBOL_GPL(ip_build_and_send_pkt);
 
@@ -327,7 +327,7 @@ packet_routed:
 		ip_options_build(skb, &inet_opt->opt, inet->inet_daddr, rt, 0);
 	}
 
-	ip_select_ident_more(iph, &rt->dst, sk,
+	ip_select_ident_more(skb, &rt->dst, sk,
 			     (skb_shinfo(skb)->gso_segs ?: 1) - 1);
 
 	skb->priority = sk->sk_priority;
@@ -1135,12 +1135,12 @@ struct sk_buff *__ip_make_skb(struct sock *sk,
 	else
 		ttl = ip_select_ttl(inet, &rt->dst);
 
-	iph = (struct iphdr *)skb->data;
+	iph = ip_hdr(skb);
 	iph->version = 4;
 	iph->ihl = 5;
 	iph->tos = inet->tos;
 	iph->frag_off = df;
-	ip_select_ident(iph, &rt->dst, sk);
+	ip_select_ident(skb, &rt->dst, sk);
 	iph->ttl = ttl;
 	iph->protocol = sk->sk_protocol;
 	ip_copy_addrs(iph, fl4);
