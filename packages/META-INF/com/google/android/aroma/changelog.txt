@@ -1,3 +1,17 @@
+[4/18/2014]
+-Linux Version 3.4.87
+-Removed CPUQUIET Power Management
+-TIME: update some functions of timekeeping.c to latest CAF
+-Resolve CPUFREQ_NOTIFY issue
+-enable quad core cpu stats
+-ACPUCLOCK: scale L2 cache and CPU freqs in sync CPU speed and L2 cache
+-decrease PHY_SUSPEND_TIMEOUT_USEC to 200 (from 500)
+-Keep HSIC in Low Power Mode
+-Prevent system suspend when HSIC device is active
+-qdsp6v2: Propagate device HW delay to AFE
+-Added Buffer overflow check 
+-switched to arm-cortex_a15-linux-gnueabihf-linaro_4.8.3-2014.04 toolchain
+
 [4/17/2014]
 -Added CPUQuiet Power Management by @maxwen
 -introduce OndemandPLUS governor
