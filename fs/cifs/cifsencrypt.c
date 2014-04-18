@@ -451,7 +451,7 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 	int rc = 0;
 	int len;
 	char nt_hash[CIFS_NTHASH_SIZE];
-	wchar_t *user;
+	__le16 *user;
 	wchar_t *domain;
 	wchar_t *server;
 
@@ -472,8 +472,8 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 		return rc;
 	}
 
-	/* convert ses->user_name to unicode and uppercase */
-	len = strlen(ses->user_name);
+	/* convert ses->user_name to unicode */
+	len = ses->user_name ? strlen(ses->user_name) : 0;
 	user = kmalloc(2 + (len * 2), GFP_KERNEL);
 	if (user == NULL) {
 		cERROR(1, "calc_ntlmv2_hash: user mem alloc failure\n");
@@ -483,7 +483,14 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 	len = cifs_strtoUCS((__le16 *)user, ses->user_name, len, nls_cp);
 	UniStrupr(user);
 
-	crypto_shash_update(&ses->server->secmech.sdeschmacmd5->shash,
+	if (len) {
+		len = cifs_strtoUTF16(user, ses->user_name, len, nls_cp);
+		UniStrupr(user);
+	} else {
+		memset(user, '\0', 2);
+	}
+
+	rc = crypto_shash_update(&ses->server->secmech.sdeschmacmd5->shash,
 				(char *)user, 2 * len);
 
 	/* convert ses->domainName to unicode and uppercase */
