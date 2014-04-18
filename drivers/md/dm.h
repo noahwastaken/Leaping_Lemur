@@ -15,6 +15,7 @@
 #include <linux/list.h>
 #include <linux/blkdev.h>
 #include <linux/hdreg.h>
+#include <linux/completion.h>
 
 #define DM_SUSPEND_LOCKFS_FLAG		(1 << 0)
 #define DM_SUSPEND_NOFLUSH_FLAG		(1 << 1)
@@ -89,6 +90,7 @@ int dm_sysfs_init(struct mapped_device *md);
 void dm_sysfs_exit(struct mapped_device *md);
 struct kobject *dm_kobject(struct mapped_device *md);
 struct mapped_device *dm_get_from_kobject(struct kobject *kobj);
+struct completion *dm_get_completion_from_kobject(struct kobject *kobj);
 
 int dm_linear_init(void);
 void dm_linear_exit(void);

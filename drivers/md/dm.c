@@ -146,6 +146,8 @@ struct mapped_device {
 	
 	struct kobject kobj;
 
+/* wait until the kobject is released */
+	struct completion kobj_completion;
 	
 	struct bio flush_bio;
 };
@@ -1596,6 +1598,7 @@ static struct mapped_device *alloc_dev(int minor)
 	init_waitqueue_head(&md->wait);
 	INIT_WORK(&md->work, dm_wq_work);
 	init_waitqueue_head(&md->eventq);
+	init_completion(&md->kobj_completion);
 
 	md->disk->major = _major;
 	md->disk->first_minor = minor;
@@ -2278,6 +2281,13 @@ struct mapped_device *dm_get_from_kobject(struct kobject *kobj)
 
 	dm_get(md);
 	return md;
+}
+
+struct completion *dm_get_completion_from_kobject(struct kobject *kobj)
+{
+	struct mapped_device *md = container_of(kobj, struct mapped_device, kobj);
+
+	return &md->kobj_completion;
 }
 
 int dm_suspended_md(struct mapped_device *md)
