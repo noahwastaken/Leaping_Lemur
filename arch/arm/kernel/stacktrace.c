@@ -14,11 +14,11 @@ int notrace unwind_frame(struct stackframe *frame)
 	low = frame->sp;
 	high = ALIGN(low, THREAD_SIZE);
 
-	
-	if (fp < (low + 12) || fp + 4 >= high)
+	/* check current frame pointer is within bounds */
+	if (fp < low + 12 || fp > high - 4)
 		return -EINVAL;
 
-	
+	/* restore the registers from the stack frame */
 	frame->fp = *(unsigned long *)(fp - 12);
 	frame->sp = *(unsigned long *)(fp - 8);
 	frame->pc = *(unsigned long *)(fp - 4);
