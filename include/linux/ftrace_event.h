@@ -58,11 +58,13 @@ struct trace_iterator {
 	struct ring_buffer_iter	*buffer_iter[NR_CPUS];
 	unsigned long		iter_flags;
 
-	
-	struct trace_seq	tmp_seq;
+	/* trace_seq for __print_flags() and __print_symbolic() etc. */
+ 	struct trace_seq	tmp_seq;
+ 
+	cpumask_var_t		started;
 
-	
-	struct trace_seq	seq;
+ 	/* The below is zeroed out in pipe_read */
+ 	struct trace_seq	seq;
 	struct trace_entry	*ent;
 	unsigned long		lost_events;
 	int			leftover;
@@ -73,7 +75,7 @@ struct trace_iterator {
 	loff_t			pos;
 	long			idx;
 
-	cpumask_var_t		started;
+	/* All new field here will be zeroed out in pipe_read */
 };
 
 
