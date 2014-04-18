@@ -484,7 +484,7 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 	UniStrupr(user);
 
 	if (len) {
-		len = cifs_strtoUTF16(user, ses->user_name, len, nls_cp);
+		len = cifs_strtoUCS(user, ses->user_name, len, nls_cp);
 		UniStrupr(user);
 	} else {
 		memset(user, '\0', 2);
