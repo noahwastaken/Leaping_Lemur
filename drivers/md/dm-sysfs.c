@@ -79,11 +79,6 @@ static const struct sysfs_ops dm_sysfs_ops = {
 	.show	= dm_attr_show,
 };
 
-static void dm_kobject_release(struct kobject *kobj)
-{
-	complete(dm_get_completion_from_kobject(kobj));
-}
-
 static struct kobj_type dm_ktype = {
 	.sysfs_ops	= &dm_sysfs_ops,
 	.default_attrs	= dm_attrs,
