@@ -2485,6 +2485,14 @@ static int msm_hsic_pm_resume(struct device *dev)
 	if (get_radio_flag() & RADIO_FLAG_USB_UPLOAD)
 		dev_info(dev, "ehci-msm-hsic PM resume\n");
 	
+	/*
+	 * Keep HSIC in Low Power Mode if system is resumed
+	 * by any other wakeup source.  HSIC is resumed later
+	 * when remote wakeup is received or interface driver
+	 * start I/O.
+	 */
+	if (!atomic_read(&mehci->pm_usage_cnt))
+		return 0;
 
 	ret = msm_hsic_resume(mehci);
 	if (ret)
