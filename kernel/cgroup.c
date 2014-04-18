@@ -1530,8 +1530,8 @@ static int cgroup_attach_proc(struct cgroup *cgrp, struct task_struct *leader)
 	group = flex_array_alloc(sizeof(*tc), group_size, GFP_KERNEL);
 	if (!group)
 		return -ENOMEM;
-	
-	retval = flex_array_prealloc(group, 0, group_size - 1, GFP_KERNEL);
+	/* pre-allocate to guarantee space while iterating in rcu read-side. */
+	retval = flex_array_prealloc(group, 0, group_size, GFP_KERNEL);
 	if (retval)
 		goto out_free_group_list;
 
