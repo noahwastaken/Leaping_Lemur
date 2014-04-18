@@ -153,9 +153,6 @@ static void cpu_ctx_sched_in(struct perf_cpu_context *cpuctx,
 static void update_context_time(struct perf_event_context *ctx);
 static u64 perf_event_time(struct perf_event *event);
 
-static void ring_buffer_attach(struct perf_event *event,
-			       struct ring_buffer *rb);
-
 void __weak perf_event_print_debug(void)	{ }
 
 extern __weak const char *perf_pmu_name(void)
@@ -2173,6 +2170,7 @@ static void free_event_rcu(struct rcu_head *head)
 }
 
 static void ring_buffer_put(struct ring_buffer *rb);
+static void ring_buffer_detach(struct perf_event *event, struct ring_buffer *rb);
 
 static void free_event(struct perf_event *event)
 {
@@ -2197,15 +2195,30 @@ static void free_event(struct perf_event *event)
 		if (has_branch_stack(event)) {
 			static_key_slow_dec_deferred(&perf_sched_events);
 			
-			if (!(event->attach_state & PERF_ATTACH_TASK))
+			if (!(event->attach_state & PERF_ATTACH_TASK)) {
 				atomic_dec(&per_cpu(perf_branch_stack_events,
 						    event->cpu));
+			}
 		}
 	}
 
 	if (event->rb) {
-		ring_buffer_put(event->rb);
-		event->rb = NULL;
+		struct ring_buffer *rb;
+
+		/*
+		 * Can happen when we close an event with re-directed output.
+		 *
+		 * Since we have a 0 refcount, perf_mmap_close() will skip
+		 * over us; possibly making our ring_buffer_put() the last.
+		 */
+		mutex_lock(&event->mmap_mutex);
+		rb = event->rb;
+		if (rb) {
+			rcu_assign_pointer(event->rb, NULL);
+			ring_buffer_detach(event, rb);
+			ring_buffer_put(rb); /* could be last */
+		}
+		mutex_unlock(&event->mmap_mutex);
 	}
 
 	if (is_cgroup_event(event))
@@ -2398,25 +2411,23 @@ perf_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 
 static unsigned int perf_poll(struct file *file, poll_table *wait)
 {
-	struct perf_event *event = file->private_data;
-	struct ring_buffer *rb;
-	unsigned int events = POLL_HUP;
+        struct perf_event *event = file->private_data;
+        struct ring_buffer *rb;
+        unsigned int events = POLL_HUP;
 
-	mutex_lock(&event->mmap_mutex);
+        /*
+         * Pin the event->rb by taking event->mmap_mutex; otherwise
+         * perf_event_set_output() can swizzle our rb and make us miss wakeups.
+         */
+        mutex_lock(&event->mmap_mutex);
+        rb = event->rb;
+        if (rb)
+                events = atomic_xchg(&rb->poll, 0);
+        mutex_unlock(&event->mmap_mutex);
 
-	rcu_read_lock();
-	rb = rcu_dereference(event->rb);
-	if (rb) {
-		ring_buffer_attach(event, rb);
-		events = atomic_xchg(&rb->poll, 0);
-	}
-	rcu_read_unlock();
+        poll_wait(file, &event->waitq, wait);
 
-	mutex_unlock(&event->mmap_mutex);
-
-	poll_wait(file, &event->waitq, wait);
-
-	return events;
+        return events;
 }
 
 static void perf_event_reset(struct perf_event *event)
@@ -2704,16 +2715,12 @@ static void ring_buffer_attach(struct perf_event *event,
 		return;
 
 	spin_lock_irqsave(&rb->event_lock, flags);
-	if (!list_empty(&event->rb_entry))
-		goto unlock;
-
-	list_add(&event->rb_entry, &rb->event_list);
-unlock:
+	if (list_empty(&event->rb_entry))
+		list_add(&event->rb_entry, &rb->event_list);
 	spin_unlock_irqrestore(&rb->event_lock, flags);
 }
 
-static void ring_buffer_detach(struct perf_event *event,
-			       struct ring_buffer *rb)
+static void ring_buffer_detach(struct perf_event *event, struct ring_buffer *rb)
 {
 	unsigned long flags;
 
@@ -2732,13 +2739,10 @@ static void ring_buffer_wakeup(struct perf_event *event)
 
 	rcu_read_lock();
 	rb = rcu_dereference(event->rb);
-	if (!rb)
-		goto unlock;
-
-	list_for_each_entry_rcu(event, &rb->event_list, rb_entry)
-		wake_up_all(&event->waitq);
-
-unlock:
+	if (rb) {
+		list_for_each_entry_rcu(event, &rb->event_list, rb_entry)
+			wake_up_all(&event->waitq);
+	}
 	rcu_read_unlock();
 }
 
@@ -2767,18 +2771,10 @@ static struct ring_buffer *ring_buffer_get(struct perf_event *event)
 
 static void ring_buffer_put(struct ring_buffer *rb)
 {
-	struct perf_event *event, *n;
-	unsigned long flags;
-
 	if (!atomic_dec_and_test(&rb->refcount))
 		return;
 
-	spin_lock_irqsave(&rb->event_lock, flags);
-	list_for_each_entry_safe(event, n, &rb->event_list, rb_entry) {
-		list_del_init(&event->rb_entry);
-		wake_up_all(&event->waitq);
-	}
-	spin_unlock_irqrestore(&rb->event_lock, flags);
+	WARN_ON_ONCE(!list_empty(&rb->event_list));
 
 	call_rcu(&rb->rcu_head, rb_free_rcu);
 }
@@ -2788,26 +2784,100 @@ static void perf_mmap_open(struct vm_area_struct *vma)
 	struct perf_event *event = vma->vm_file->private_data;
 
 	atomic_inc(&event->mmap_count);
+	atomic_inc(&event->rb->mmap_count);
 }
 
+/*
+ * A buffer can be mmap()ed multiple times; either directly through the same
+ * event, or through other events by use of perf_event_set_output().
+ *
+ * In order to undo the VM accounting done by perf_mmap() we need to destroy
+ * the buffer here, where we still have a VM context. This means we need
+ * to detach all events redirecting to us.
+ */
 static void perf_mmap_close(struct vm_area_struct *vma)
 {
 	struct perf_event *event = vma->vm_file->private_data;
 
-	if (atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex)) {
-		unsigned long size = perf_data_size(event->rb);
-		struct user_struct *user = event->mmap_user;
-		struct ring_buffer *rb = event->rb;
+	struct ring_buffer *rb = event->rb;
+	struct user_struct *mmap_user = rb->mmap_user;
+	int mmap_locked = rb->mmap_locked;
+	unsigned long size = perf_data_size(rb);
 
-		atomic_long_sub((size >> PAGE_SHIFT) + 1, &user->locked_vm);
-		vma->vm_mm->pinned_vm -= event->mmap_locked;
-		rcu_assign_pointer(event->rb, NULL);
-		ring_buffer_detach(event, rb);
-		mutex_unlock(&event->mmap_mutex);
+	atomic_dec(&rb->mmap_count);
 
-		ring_buffer_put(rb);
-		free_uid(user);
+	if (!atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex))
+		return;
+
+	/* Detach current event from the buffer. */
+	rcu_assign_pointer(event->rb, NULL);
+	ring_buffer_detach(event, rb);
+	mutex_unlock(&event->mmap_mutex);
+
+	/* If there's still other mmap()s of this buffer, we're done. */
+	if (atomic_read(&rb->mmap_count)) {
+		ring_buffer_put(rb); /* can't be last */
+		return;
 	}
+
+	/*
+	 * No other mmap()s, detach from all other events that might redirect
+	 * into the now unreachable buffer. Somewhat complicated by the
+	 * fact that rb::event_lock otherwise nests inside mmap_mutex.
+	 */
+again:
+	rcu_read_lock();
+	list_for_each_entry_rcu(event, &rb->event_list, rb_entry) {
+		if (!atomic_long_inc_not_zero(&event->refcount)) {
+			/*
+			 * This event is en-route to free_event() which will
+			 * detach it and remove it from the list.
+			 */
+			continue;
+		}
+		rcu_read_unlock();
+
+		mutex_lock(&event->mmap_mutex);
+		/*
+		 * Check we didn't race with perf_event_set_output() which can
+		 * swizzle the rb from under us while we were waiting to
+		 * acquire mmap_mutex.
+		 *
+		 * If we find a different rb; ignore this event, a next
+		 * iteration will no longer find it on the list. We have to
+		 * still restart the iteration to make sure we're not now
+		 * iterating the wrong list.
+		 */
+		if (event->rb == rb) {
+			rcu_assign_pointer(event->rb, NULL);
+			ring_buffer_detach(event, rb);
+			ring_buffer_put(rb); /* can't be last, we still have one */
+		}
+		mutex_unlock(&event->mmap_mutex);
+		put_event(event);
+
+		/*
+		 * Restart the iteration; either we're on the wrong list or
+		 * destroyed its integrity by doing a deletion.
+		 */
+		goto again;
+	}
+	rcu_read_unlock();
+
+	/*
+	 * It could be there's still a few 0-ref events on the list; they'll
+	 * get cleaned up by free_event() -- they'll also still have their
+	 * ref on the rb and will free it whenever they are done with it.
+	 *
+	 * Aside from that, this buffer is 'fully' detached and unmapped,
+	 * undo the VM accounting.
+	 */
+
+	atomic_long_sub((size >> PAGE_SHIFT) + 1, &mmap_user->locked_vm);
+	vma->vm_mm->pinned_vm -= mmap_locked;
+	free_uid(mmap_user);
+
+	ring_buffer_put(rb); /* could be last */
 }
 
 static const struct vm_operations_struct perf_mmap_vmops = {
@@ -2848,12 +2918,24 @@ static int perf_mmap(struct file *file, struct vm_area_struct *vma)
 		return -EINVAL;
 
 	WARN_ON_ONCE(event->ctx->parent_ctx);
+again:
 	mutex_lock(&event->mmap_mutex);
 	if (event->rb) {
-		if (event->rb->nr_pages == nr_pages)
-			atomic_inc(&event->rb->refcount);
-		else
+		if (event->rb->nr_pages != nr_pages) {
 			ret = -EINVAL;
+			goto unlock;
+		}
+
+		if (!atomic_inc_not_zero(&event->rb->mmap_count)) {
+			/*
+			 * Raced against perf_mmap_close() through
+			 * perf_event_set_output(). Try again, hope for better
+			 * luck.
+			 */
+			mutex_unlock(&event->mmap_mutex);
+			goto again;
+		}
+
 		goto unlock;
 	}
 
@@ -2891,12 +2973,16 @@ static int perf_mmap(struct file *file, struct vm_area_struct *vma)
 		ret = -ENOMEM;
 		goto unlock;
 	}
-	rcu_assign_pointer(event->rb, rb);
+
+	atomic_set(&rb->mmap_count, 1);
+	rb->mmap_locked = extra;
+	rb->mmap_user = get_current_user();
 
 	atomic_long_add(user_extra, &user->locked_vm);
-	event->mmap_locked = extra;
-	event->mmap_user = get_current_user();
-	vma->vm_mm->pinned_vm += event->mmap_locked;
+	vma->vm_mm->pinned_vm += extra;
+
+	ring_buffer_attach(event, rb);
+	rcu_assign_pointer(event->rb, rb);
 
 	perf_event_update_userpage(event);
 
@@ -2905,7 +2991,11 @@ unlock:
 		atomic_inc(&event->mmap_count);
 	mutex_unlock(&event->mmap_mutex);
 
-	vma->vm_flags |= VM_RESERVED;
+	/*
+	 * Since pinned accounting is per vm we cannot allow fork() to copy our
+	 * vma.
+	 */
+	vma->vm_flags |= VM_DONTCOPY | VM_RESERVED;
 	vma->vm_ops = &perf_mmap_vmops;
 
 	return ret;
@@ -5120,98 +5210,110 @@ done:
 }
 
 static int perf_copy_attr(struct perf_event_attr __user *uattr,
-			  struct perf_event_attr *attr)
+                          struct perf_event_attr *attr)
 {
-	u32 size;
-	int ret;
+        u32 size;
+        int ret;
 
-	if (!access_ok(VERIFY_WRITE, uattr, PERF_ATTR_SIZE_VER0))
-		return -EFAULT;
+        if (!access_ok(VERIFY_WRITE, uattr, PERF_ATTR_SIZE_VER0))
+                return -EFAULT;
 
-	memset(attr, 0, sizeof(*attr));
+        /*
+         * zero the full structure, so that a short copy will be nice.
+         */
+        memset(attr, 0, sizeof(*attr));
 
-	ret = get_user(size, &uattr->size);
-	if (ret)
-		return ret;
+        ret = get_user(size, &uattr->size);
+        if (ret)
+                return ret;
 
-	if (size > PAGE_SIZE)	
-		goto err_size;
+        if (size > PAGE_SIZE)        /* silly large */
+                goto err_size;
 
-	if (!size)		
-		size = PERF_ATTR_SIZE_VER0;
+        if (!size)                /* abi compat */
+                size = PERF_ATTR_SIZE_VER0;
 
-	if (size < PERF_ATTR_SIZE_VER0)
-		goto err_size;
+        if (size < PERF_ATTR_SIZE_VER0)
+                goto err_size;
 
-	if (size > sizeof(*attr)) {
-		unsigned char __user *addr;
-		unsigned char __user *end;
-		unsigned char val;
+        /*
+         * If we're handed a bigger struct than we know of,
+         * ensure all the unknown bits are 0 - i.e. new
+         * user-space does not rely on any kernel feature
+         * extensions we dont know about yet.
+         */
+        if (size > sizeof(*attr)) {
+                unsigned char __user *addr;
+                unsigned char __user *end;
+                unsigned char val;
 
-		addr = (void __user *)uattr + sizeof(*attr);
-		end  = (void __user *)uattr + size;
+                addr = (void __user *)uattr + sizeof(*attr);
+                end  = (void __user *)uattr + size;
 
-		for (; addr < end; addr++) {
-			ret = get_user(val, addr);
-			if (ret)
-				return ret;
-			if (val)
-				goto err_size;
-		}
-		size = sizeof(*attr);
-	}
+                for (; addr < end; addr++) {
+                        ret = get_user(val, addr);
+                        if (ret)
+                                return ret;
+                        if (val)
+                                goto err_size;
+                }
+                size = sizeof(*attr);
+        }
 
-	ret = copy_from_user(attr, uattr, size);
-	if (ret)
-		return -EFAULT;
+        ret = copy_from_user(attr, uattr, size);
+        if (ret)
+                return -EFAULT;
 
-	if (attr->__reserved_1)
-		return -EINVAL;
+        if (attr->__reserved_1)
+                return -EINVAL;
 
-	if (attr->sample_type & ~(PERF_SAMPLE_MAX-1))
-		return -EINVAL;
+        if (attr->sample_type & ~(PERF_SAMPLE_MAX-1))
+                return -EINVAL;
 
-	if (attr->read_format & ~(PERF_FORMAT_MAX-1))
-		return -EINVAL;
+        if (attr->read_format & ~(PERF_FORMAT_MAX-1))
+                return -EINVAL;
 
-	if (attr->sample_type & PERF_SAMPLE_BRANCH_STACK) {
-		u64 mask = attr->branch_sample_type;
+        if (attr->sample_type & PERF_SAMPLE_BRANCH_STACK) {
+                u64 mask = attr->branch_sample_type;
 
-		
-		if (mask & ~(PERF_SAMPLE_BRANCH_MAX-1))
-			return -EINVAL;
+                /* only using defined bits */
+                if (mask & ~(PERF_SAMPLE_BRANCH_MAX-1))
+                        return -EINVAL;
 
-		
-		if (!(mask & ~PERF_SAMPLE_BRANCH_PLM_ALL))
-			return -EINVAL;
+                /* at least one branch bit must be set */
+                if (!(mask & ~PERF_SAMPLE_BRANCH_PLM_ALL))
+                        return -EINVAL;
 
-		
-		if ((mask & PERF_SAMPLE_BRANCH_PERM_PLM)
-		    && perf_paranoid_kernel() && !capable(CAP_SYS_ADMIN))
-			return -EACCES;
+                /* kernel level capture: check permissions */
+                if ((mask & PERF_SAMPLE_BRANCH_PERM_PLM)
+                    && perf_paranoid_kernel() && !capable(CAP_SYS_ADMIN))
+                        return -EACCES;
 
-		
-		if (!(mask & PERF_SAMPLE_BRANCH_PLM_ALL)) {
+                /* propagate priv level, when not set for branch */
+                if (!(mask & PERF_SAMPLE_BRANCH_PLM_ALL)) {
 
-			
-			if (!attr->exclude_kernel)
-				mask |= PERF_SAMPLE_BRANCH_KERNEL;
+                        /* exclude_kernel checked on syscall entry */
+                        if (!attr->exclude_kernel)
+                                mask |= PERF_SAMPLE_BRANCH_KERNEL;
 
-			if (!attr->exclude_user)
-				mask |= PERF_SAMPLE_BRANCH_USER;
+                        if (!attr->exclude_user)
+                                mask |= PERF_SAMPLE_BRANCH_USER;
 
-			if (!attr->exclude_hv)
-				mask |= PERF_SAMPLE_BRANCH_HV;
-			attr->branch_sample_type = mask;
-		}
-	}
+                        if (!attr->exclude_hv)
+                                mask |= PERF_SAMPLE_BRANCH_HV;
+                        /*
+                         * adjust user setting (for HW filter setup)
+                         */
+                        attr->branch_sample_type = mask;
+                }
+        }
 out:
-	return ret;
+        return ret;
 
 err_size:
-	put_user(sizeof(*attr), &uattr->size);
-	ret = -E2BIG;
-	goto out;
+        put_user(sizeof(*attr), &uattr->size);
+        ret = -E2BIG;
+        goto out;
 }
 
 static int
