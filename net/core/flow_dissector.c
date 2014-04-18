@@ -47,7 +47,7 @@ ip:
 		struct ipv6hdr _iph;
 ipv6:
 		iph = skb_header_pointer(skb, nhoff, sizeof(_iph), &_iph);
-		if (!iph || iph->ihl < 5)
+		if (!iph)
 			return false;
 
 		ip_proto = iph->nexthdr;
@@ -101,6 +101,10 @@ ipv6:
 		hdr = skb_header_pointer(skb, nhoff, sizeof(_hdr), &_hdr);
 		if (!hdr)
 			return false;
+		/*
+		 * Only look inside GRE if version zero and no
+		 * routing
+		 */
 		if (!(hdr->flags & (GRE_VERSION|GRE_ROUTING))) {
 			proto = hdr->proto;
 			nhoff += 4;
