@@ -11,6 +11,12 @@
 -qdsp6v2: Propagate device HW delay to AFE
 -Added Buffer overflow check 
 -switched to arm-cortex_a15-linux-gnueabihf-linaro_4.8.3-2014.04 toolchain
+-SELinux: Reduce overhead of mls_level_isvalid() function call 
+-kernel: Replace timeconst.pl with a bc script
+-tcp small queues
+-fix conflicting types for tcp_write_xmit 
+-tcp: add auto corking feature 
+-tcp: network speed tweak 
 
 [4/17/2014]
 -Added CPUQuiet Power Management by @maxwen
