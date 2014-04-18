@@ -2636,6 +2636,9 @@ static void ext4_mb_pa_callback(struct rcu_head *head)
 {
 	struct ext4_prealloc_space *pa;
 	pa = container_of(head, struct ext4_prealloc_space, u.pa_rcu);
+
+	BUG_ON(atomic_read(&pa->pa_count));
+	BUG_ON(pa->pa_deleted == 0);
 	kmem_cache_free(ext4_pspace_cachep, pa);
 }
 
@@ -2645,11 +2648,13 @@ static void ext4_mb_put_pa(struct ext4_allocation_context *ac,
 	ext4_group_t grp;
 	ext4_fsblk_t grp_blk;
 
-	if (!atomic_dec_and_test(&pa->pa_count) || pa->pa_free != 0)
-		return;
-
-	
+	/* in this short window concurrent discard can set pa_deleted */
 	spin_lock(&pa->pa_lock);
+	if (!atomic_dec_and_test(&pa->pa_count) || pa->pa_free != 0) {
+		spin_unlock(&pa->pa_lock);
+		return;
+	}
+
 	if (pa->pa_deleted == 1) {
 		spin_unlock(&pa->pa_lock);
 		return;
@@ -2659,11 +2664,29 @@ static void ext4_mb_put_pa(struct ext4_allocation_context *ac,
 	spin_unlock(&pa->pa_lock);
 
 	grp_blk = pa->pa_pstart;
+	/*
+	 * If doing group-based preallocation, pa_pstart may be in the
+	 * next group when pa is used up
+	 */
 	if (pa->pa_type == MB_GROUP_PA)
 		grp_blk--;
 
 	ext4_get_group_no_and_offset(sb, grp_blk, &grp, NULL);
 
+	/*
+	 * possible race:
+	 *
+	 *  P1 (buddy init)			P2 (regular allocation)
+	 *					find block B in PA
+	 *  copy on-disk bitmap to buddy
+	 *  					mark B in on-disk bitmap
+	 *					drop PA from group
+	 *  mark all PAs in buddy
+	 *
+	 * thus, P1 initializes buddy with B available. to prevent this
+	 * we make "copy" and "mark all PAs" atomic and serialize "drop PA"
+	 * against that pair
+	 */
 	ext4_lock_group(sb, grp);
 	list_del(&pa->pa_group_list);
 	ext4_unlock_group(sb, grp);
@@ -2683,7 +2706,6 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
 	struct ext4_prealloc_space *pa;
 	struct ext4_group_info *grp;
 	struct ext4_inode_info *ei;
-
 	
 	BUG_ON(ac->ac_o_ex.fe_len >= ac->ac_b_ex.fe_len);
 	BUG_ON(ac->ac_status != AC_STATUS_FOUND);
