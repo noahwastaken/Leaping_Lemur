@@ -73,7 +73,8 @@ struct snd_usb_substream {
 	unsigned int syncmaxsize;	
 	unsigned int fill_max: 1;	
 	unsigned int txfr_quirk:1;	
-	unsigned int fmt_type;		
+	unsigned int fmt_type;	
+	unsigned int pkt_offset_adj;	/* Bytes to drop from beginning of packets (for non-compliant devices) */	
 
 	unsigned int running: 1;	
 
