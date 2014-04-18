@@ -3547,10 +3547,24 @@ void cgroup_fork(struct task_struct *child)
 	INIT_LIST_HEAD(&child->cg_list);
 }
 
-void cgroup_fork_callbacks(struct task_struct *child)
+void cgroup_post_fork(struct task_struct *child)
 {
+	int i;
+	if (use_task_css_set_links) {
+		write_lock(&css_set_lock);
+		task_lock(child);
+		if (list_empty(&child->cg_list))
+			list_add(&child->cg_list, &child->cgroups->tasks);
+		task_unlock(child);
+		write_unlock(&css_set_lock);
+	}
+
+	/*
+	 * Call ss->fork().  This must happen after @child is linked on
+	 * css_set; otherwise, @child might change state between ->fork()
+	 * and addition to css_set.
+	 */
 	if (need_forkexit_callback) {
-		int i;
 		for (i = 0; i < CGROUP_BUILTIN_SUBSYS_COUNT; i++) {
 			struct cgroup_subsys *ss = subsys[i];
 			if (ss->fork)
@@ -3559,17 +3573,6 @@ void cgroup_fork_callbacks(struct task_struct *child)
 	}
 }
 
-void cgroup_post_fork(struct task_struct *child)
-{
-	if (use_task_css_set_links) {
- 		write_lock(&css_set_lock);
-		task_lock(child);
-		if (list_empty(&child->cg_list))
- 			list_add(&child->cg_list, &child->cgroups->tasks);
-		task_unlock(child);
- 		write_unlock(&css_set_lock);
- 	}
- }
 void cgroup_exit(struct task_struct *tsk, int run_callbacks)
 {
 	struct css_set *cg;
