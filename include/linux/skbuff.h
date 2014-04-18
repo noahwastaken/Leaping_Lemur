@@ -501,10 +501,27 @@ static inline struct sk_buff *skb_get(struct sk_buff *skb)
  */
 static inline int skb_cloned(const struct sk_buff *skb)
 {
-	return skb->cloned &&
-	       (atomic_read(&skb_shinfo(skb)->dataref) & SKB_DATAREF_MASK) != 1;
+        return skb->cloned &&
+               (atomic_read(&skb_shinfo(skb)->dataref) & SKB_DATAREF_MASK) != 1;
 }
 
+static inline int skb_unclone(struct sk_buff *skb, gfp_t pri)
+{
+        might_sleep_if(pri & __GFP_WAIT);
+
+        if (skb_cloned(skb))
+                return pskb_expand_head(skb, 0, 0, pri);
+
+        return 0;
+}
+
+/**
+ *        skb_header_cloned - is the header a clone
+ *        @skb: buffer to check
+ *
+ *        Returns true if modifying the header part of the buffer requires
+ *        the data to be copied.
+ */
 static inline int skb_header_cloned(const struct sk_buff *skb)
 {
 	int dataref;
@@ -741,13 +758,31 @@ static inline unsigned int skb_headlen(const struct sk_buff *skb)
 
 static inline int skb_pagelen(const struct sk_buff *skb)
 {
-	int i, len = 0;
+        int i, len = 0;
 
-	for (i = (int)skb_shinfo(skb)->nr_frags - 1; i >= 0; i--)
-		len += skb_frag_size(&skb_shinfo(skb)->frags[i]);
-	return len + skb_headlen(skb);
+        for (i = (int)skb_shinfo(skb)->nr_frags - 1; i >= 0; i--)
+                len += skb_frag_size(&skb_shinfo(skb)->frags[i]);
+        return len + skb_headlen(skb);
 }
 
+static inline bool skb_has_frags(const struct sk_buff *skb)
+{
+        return skb_shinfo(skb)->nr_frags;
+}
+
+/**
+ * __skb_fill_page_desc - initialise a paged fragment in an skb
+ * @skb: buffer containing fragment to be initialised
+ * @i: paged fragment index to initialise
+ * @page: the page to use for this fragment
+ * @off: the offset to the data with @page
+ * @size: the length of the data
+ *
+ * Initialises the @i'th fragment of @skb to point to &size bytes at
+ * offset @off within @page.
+ *
+ * Does not take any additional reference on the fragment.
+ */
 static inline void __skb_fill_page_desc(struct sk_buff *skb, int i,
 					struct page *page, int off, int size)
 {
