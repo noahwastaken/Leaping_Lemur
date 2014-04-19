@@ -17,6 +17,12 @@
 -fix conflicting types for tcp_write_xmit 
 -tcp: add auto corking feature 
 -tcp: network speed tweak 
+-remove a lot of debugging
+-Make GENTLE_FAIR_SLEEPERS configurable thru sysfs 
+-Memory allocated by kstrdup should be freed
+-Try setting slub_max_order to zero
+-Adjust dirty writeback for IO boost
+-Always set noatime no diratime on all partitions! I/O Boost!
 
 [4/17/2014]
 -Added CPUQuiet Power Management by @maxwen
