@@ -201,7 +201,14 @@ echo Powersave bias is $POWERSAVE_BIAS >> $LEMUR_LOGFILE
 
 #Load exFAT module
 if [ "`grep EXFAT=1 $LEMUR_CONF`" ]; then
-   insmod /system/lib/modules/exfat.ko
+  insmod /system/lib/modules/exfat.ko
+  echo exFAT support enabled >> $LEMUR_LOGFILE;
+fi
+
+#Load color/gamma module
+if [ "`grep COLOR=1 $LEMUR_CONF`" ]; then
+  insmod /system/lib/modules/msm_kcal_ctrl.ko
+  echo Color Control enabled >> $LEMUR_LOGFILE;
 fi
 
 #Set BLN
@@ -334,7 +341,7 @@ fi
 if [ "`grep DYN_FSYNC=0 $LEMUR_CONF`" ]; then
   echo 0 > /sys/kernel/dyn_fsync/Dyn_fsync_active;
   echo Dynamic Fsync disabled >> $LEMUR_LOGFILE;
-elif [ "`grep DYN_FSYNC=1 $LEMUR_CONF`" ]; then
+else
   echo 1 > /sys/kernel/dyn_fsync/Dyn_fsync_active;
   echo Dynamic Fsync enabled >> $LEMUR_LOGFILE;
 fi

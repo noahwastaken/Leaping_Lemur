@@ -157,11 +157,20 @@ fi
 
 #Dynamic Fsync
 DYN_FSYNC=`grep "item.0.9" /tmp/aroma/mods.prop | cut -d '=' -f2`
-echo -e "\n\n##### Dynamic Fsync ######\n# 1 to enable Dynamic Fsync \n# 0 to disable Dynamic Fsync\n" >> $CONFIGFILE
+echo -e "\n\n##### Dynamic Fsync ######\n# 1 to enable (default)\n# 0 to disable\n" >> $CONFIGFILE
 if [ $DYN_FSYNC = 1 ]; then
-  echo "DYN_FSYNC=1" >> $CONFIGFILE;
-else
   echo "DYN_FSYNC=0" >> $CONFIGFILE;
+else
+  echo "DYN_FSYNC=1" >> $CONFIGFILE;
+fi
+
+#Color module
+COLOR=`grep "item.1.0" /tmp/aroma/mods.prop | cut -d '=' -f2`
+echo -e "\n\n##### Color/Gamma Settings ######\n# 1 to enable Color/Gamma support\n# 0 to disable Color/Gamma support\n" >> $CONFIGFILE
+if [ $COLOR = 1 ]; then
+  echo "COLOR=1" >> $CONFIGFILE;
+else
+  echo "COLOR=0" >> $CONFIGFILE;
 fi
 
 #GPU OC

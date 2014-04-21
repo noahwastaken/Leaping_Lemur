@@ -275,12 +275,13 @@ checkbox(
   "Enable Logo2menu","Use HTC logo as menu button",0,
   "Enable Button Light Notification","",0,
   "Enable USB fastcharge","",0,
-  "Enable Dynamic Fsync","",0,
+  "Disable Dynamic Fsync","Faster fileystem performance, but risk of data loss",0
   "Disable HTC color enhancement","truer color",0,
-  "Enable graphics boost","Better gaming performance",0,
+  "Enable graphics boost","Better gaming performance",1,
   "Disable HTC pnpmgr","HTC pnpmgr ensures smooth ui, recommend leaving it enabled",0,
   "Optimized Bionic Libraries","For GPE users only",0,
-  "Enable exFAT support","",0
+  "Enable exFAT support","",0,
+  "Enable Color/Gamma support","",0
 );
   
 checkbox(
