@@ -372,13 +372,6 @@ LINUXINCLUDE    := -I$(srctree)/arch/$(hdr-arch)/include \
 
 KBUILD_CPPFLAGS := -D__KERNEL__ -O3 -fgcse-sm -fsched-spec-load -fsingle-precision-constant -mfpu=neon-vfpv4 -mtune=cortex-a15  -mcpu=cortex-a15 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 
-#
-# LINARO OPT
-#
-CFLAGS_A15 = -mtune=cortex-a15 -mfpu=neon-vfpv4 -funsafe-math-optimizations
-CFLAGS_MODULO = -fmodulo-sched -fmodulo-sched-allow-regmoves
-KERNEL_MODS	= $(CFLAGS_A15) $(CFLAGS_MODULO)
-
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
