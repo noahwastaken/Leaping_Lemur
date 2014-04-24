@@ -164,15 +164,6 @@ else
   echo "DYN_FSYNC=1" >> $CONFIGFILE;
 fi
 
-#Color module
-COLOR=`grep "item.1.0" /tmp/aroma/mods.prop | cut -d '=' -f2`
-echo -e "\n\n##### Color/Gamma Settings ######\n# 1 to enable Color/Gamma support\n# 0 to disable Color/Gamma support\n" >> $CONFIGFILE
-if [ $COLOR = 1 ]; then
-  echo "COLOR=1" >> $CONFIGFILE;
-else
-  echo "COLOR=0" >> $CONFIGFILE;
-fi
-
 #GPU OC
 GPU_OC=`cat /tmp/aroma/gpu.prop | cut -d '=' -f2`
 echo -e "\n\n##### GPU Settings ######\n#values:  410 450 477 491 504 531 558 585\n#These cannot be applied if you selected stock GPU frequency during installation\n" >> $CONFIGFILE
@@ -194,20 +185,6 @@ elif [ $GPU_OC = 9 ]; then
   echo "GPU_OC=585" >> $CONFIGFILE;
 else
   echo "GPU_OC=0" >> $CONFIGFILE;
-fi
-
-#THERMAL
-THERM=`cat /tmp/aroma/thermal.prop | cut -d '=' -f2`
-echo -e "\n\n##### Thermal Settings #####\n# 0 for default thremal throttling" >> $CONFIGFILE
-echo -e "# 1 to run cool\n# 2 to run extra cool\n# 3 to run hot\n" >> $CONFIGFILE
-if [ $THERM = 1 ]; then
-  echo "THERM=2" >> $CONFIGFILE;
-elif [ $THERM = 2 ]; then
-  echo "THERM=1" >> $CONFIGFILE;
-elif [ $THERM = 4 ]; then
-  echo "THERM=3" >> $CONFIGFILE;
-else
-  echo "THERM=0" >> $CONFIGFILE;
 fi
 
 #MPDECISION

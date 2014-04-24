@@ -256,18 +256,6 @@ else
   echo logo2menu disabled >> $LEMUR_LOGFILE;
 fi
 
-#thermal settings
-if [ "`grep THERM=1 $LEMUR_CONF`" ]; then
-  echo 58,64,75,85 > /sys/kernel/msm_thermal/conf/limit_temp_degC;
-  echo run cool >> $LEMUR_LOGFILE;
-elif [ "`grep THERM=2 $LEMUR_CONF`" ]; then
-  echo 54,60,75,85 > /sys/kernel/msm_thermal/conf/limit_temp_degC;
-  echo run extra cool >> $LEMUR_LOGFILE;
-elif [ "`grep THERM=3 $LEMUR_CONF`" ]; then
-  echo 66,71,75,85 > /sys/kernel/msm_thermal/conf/limit_temp_degC;
-  echo run hot >> $LEMUR_LOGFILE;
-fi
-
 #Set HTC color enhance
 if [ "`grep COLOR_ENHANCE=0 $LEMUR_CONF`" ]; then
   echo 0 > /sys/devices/platform/msm_fb.590593/leds/lcd-backlight/color_enhance;

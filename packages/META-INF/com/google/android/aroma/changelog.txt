@@ -2,6 +2,14 @@
 -Squashed intelliplug and all related commits
 -Added bricked thermal replacing crpalmers solution
 -Added bricked mpdecision replacing htc's/qcom's solution
+-If kswapd has been running too long, allow it to sleep 
+-change oom_kill.c to use for_each_thread() 
+-introduce for_each_thread() to replace the buggy while_each_thread()
+-lowmemorykiller.c: convert to use for_each_thread 
+-cpufreq: Fix policy getting stuck when user & kernel min/max don't overlap
+-exfat: hacked name for HTC's hardcoded vold 
+-exfat: more HTC vold mount option hacks!
+-got rid of __cpuinit
 -Remove flags in Aflags
 -Removed deprecated governors
 -Slim down kernel

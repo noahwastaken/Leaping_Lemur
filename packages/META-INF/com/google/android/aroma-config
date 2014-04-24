@@ -31,7 +31,7 @@
 # * AROMA Temporary Dir = /tmp/aroma/
 
 ini_set("rom_name",             "Leaping Lemur");
-ini_set("rom_version",          "Build #40");
+ini_set("rom_version",          "Build #49");
 ini_set("rom_author",           "Tal Noah");
 ini_set("rom_device",           "Sprint HTC One");
 ini_set("rom_date",             "Apr 24, 2014");
@@ -250,14 +250,6 @@ selectbox(
 );
 
 selectbox(
-  "Select thermal settings","Determines the amount of thermal throttling for the CPU\n","@personalize","thermal.prop",
-  "extra cool","even more thermal throttling",0,
-  "run cool","more thermal throttling",0,
-  "default","default thermal throttling",1,
-  "run hot","less thermal throttling",0
-);
-
-selectbox(
   "Select mpdecision settings","Manages CPU cores\n","@personalize","mpdec.prop",
   "battery savings","less aggressive (EXPERIMENTAL)",0,
   "default","HTC stock",1,
@@ -274,8 +266,7 @@ checkbox(
   "Enable graphics boost","Better gaming performance",1,
   "Disable HTC pnpmgr","HTC pnpmgr ensures smooth ui, recommend leaving it enabled",0,
   "Optimized Bionic Libraries","For GPE users only",0,
-  "Enable exFAT support","",0,
-  "Enable Color/Gamma support","",0
+  "Enable exFAT support","",0
 );
   
 checkbox(
