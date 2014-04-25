@@ -10,6 +10,7 @@
 -cpufreq: Break out early if target frequency is the same as the current
 -cpufreq: Save user policy min/max instead of policy min/max during hotplug
 -ondemand: Remove unnecessary synchronization attempt
+-changes to sound control @thicklizard
 
 [4/24/2014]
 -Squashed intelliplug and all related commits
