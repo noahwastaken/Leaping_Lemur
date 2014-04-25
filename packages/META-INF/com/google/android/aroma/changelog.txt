@@ -1,3 +1,16 @@
+[4/25/2014]
+-sched/fair: Optimize find_busiest_queue() 
+-sched/fair: Optimize cgroup pick_next_task_fair() 
+-update some qdsp6v2 audio format drivers to latest CAF
+-WORKQUEUE: introduce Linaro Power Efficient Workqueues system wide (Linaro)
+-backported 3.12+ kernel scheduler features/fixes/enhancements (faux123/kernel.org for better multitasking etc)
+-reduce memory usage by input driver
+-remove old slimbus drivers. 
+-ported slimbus drivers from HTC m8/Nexus 5 (same driver)
+-cpufreq: Break out early if target frequency is the same as the current
+-cpufreq: Save user policy min/max instead of policy min/max during hotplug
+-ondemand: Remove unnecessary synchronization attempt
+
 [4/24/2014]
 -Squashed intelliplug and all related commits
 -Added bricked thermal replacing crpalmers solution

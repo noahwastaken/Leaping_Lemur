@@ -31,18 +31,16 @@
 # * AROMA Temporary Dir = /tmp/aroma/
 
 ini_set("rom_name",             "Leaping Lemur");
-ini_set("rom_version",          "Build #49");
+ini_set("rom_version",          "Build #51");
 ini_set("rom_author",           "Tal Noah");
 ini_set("rom_device",           "Sprint HTC One");
-ini_set("rom_date",             "Apr 24, 2014");
+ini_set("rom_date",             "Apr 25, 2014");
 
 ini_set("force_colorspace","rgba");
 ini_set("dp","6");
 
 fontresload( "0", "ttf/Roboto-Regular.ttf", "12" );
 fontresload( "1", "ttf/Roboto-Regular.ttf", "18" ); 
-
-splash(3000, "lemur");
 
 theme("ics");
 
