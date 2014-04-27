@@ -89,9 +89,7 @@ selectbox(
   "2052MHz","",0,
   "2106MHz","",0,
   "2133MHz","",0,
-  "2160MHz","",0,
-  "2214MHz","",0,
-  "2295MHz","",0
+  "2160MHz","",0
 );
 
 
@@ -113,9 +111,7 @@ selectbox(
   "2052MHz","",0,
   "2106MHz","",0,
   "2133MHz","",0,
-  "2160MHz","",0,
-  "2214MHz","",0,
-  "2295MHz","",0
+  "2160MHz","",0
 );
 
 selectbox(
@@ -131,9 +127,7 @@ selectbox(
   "2052MHz","",0,
   "2106MHz","",0,
   "2133MHz","",0,
-  "2160MHz","",0,
-  "2214MHz","",0,
-  "2295MHz","",0
+  "2160MHz","",0
 );
 
 selectbox(
@@ -149,9 +143,7 @@ selectbox(
   "2052MHz","",0,
   "2106MHz","",0,
   "2133MHz","",0,
-  "2160MHz","",0,
-  "2214MHz","",0,
-  "2295MHz","",0
+  "2160MHz","",0
 );
 
 selectbox(
@@ -167,9 +159,7 @@ selectbox(
   "2052MHz","",0,
   "2106MHz","",0,
   "2133MHz","",0,
-  "2160MHz","",0,
-  "2214MHz","",0,
-  "2295MHz","",0
+  "2160MHz","",0
 );
 
 endif;
@@ -231,14 +221,14 @@ selectbox(
 selectbox(
   "Select maximum GPU frequency","\n","@personalize","gpu.prop",
   "400Mhz","(stock)",0,
-  "410Mhz","(stockish, but allows on the fly changing)",0,
-  "450MHz","(overclocked)",1,
-  "477MHz","(overclocked)",0,
-  "491MHz","(overclocked)",0,
-  "504MHz","(overclocked)",0,
-  "531MHz","(overclocked)",0,
-  "558MHz","(not recommended)",0,
-  "585MHz","(not recommended)",0
+  "409Mhz","(stockish)",0,
+  "450MHz","(oc)",1,
+  "477MHz","(oc)",0,
+  "491MHz","(oc)",0,
+  "504MHz","(oc)",0,
+  "531MHz","(oc)",0,
+  "558MHz","(risky)",0,
+  "585MHz","(risky)",0
 );
 
 selectbox(
@@ -249,9 +239,9 @@ selectbox(
 
 selectbox(
   "Select mpdecision settings","Manages CPU cores\n","@personalize","mpdec.prop",
-  "battery savings","less aggressive (EXPERIMENTAL)",0,
+  "battery savings","less aggressive",0,
   "default","HTC stock",1,
-  "performance","more aggressive (EXPERIMENTAL)",0
+  "performance","more aggressive",0
 );
 
 checkbox(
@@ -261,7 +251,7 @@ checkbox(
   "Enable USB fastcharge","",0,
   "Disable Dynamic Fsync","Faster fileystem performance, but risk of data loss",0,
   "Disable HTC color enhancement","truer color",0,
-  "Enable graphics boost","Better gaming performance",1,
+  "Enable graphics boost","Better gaming performance",0,
   "Disable HTC pnpmgr","HTC pnpmgr ensures smooth ui, recommend leaving it enabled",0,
   "Optimized Bionic Libraries","For GPE users only",0,
   "Enable exFAT support","",0

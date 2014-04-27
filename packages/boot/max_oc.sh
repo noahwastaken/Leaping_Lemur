@@ -41,12 +41,6 @@ case $val0 in
 	12)
 	  oc0="oc0=2160000"
 	  ;;
-	13)
-	  oc0="oc0=2214000"
-	  ;;
-	14)
-	  oc0="oc0=2295000"
-	  ;;
 esac
 
 if [ ! -e /tmp/aroma-data/freq1.prop ]; then
@@ -94,12 +88,6 @@ case $val1 in
 	12)
 	  oc1="oc1=2160000"
 	  ;;
-	13)
-	  oc1="oc1=2214000"
-	  ;;
-	14)
-	  oc1="oc1=2295000"
-	  ;;
 esac
 
 val2=$(cat /tmp/aroma-data/freq2.prop | cut -d '=' -f2)
@@ -141,12 +129,6 @@ case $val2 in
 	12)
 	  oc2="oc2=2160000"
 	  ;;
-	13)
-	  oc2="oc2=2214000"
-	  ;;
-	14)
-	  oc2="oc2=2295000"
-	  ;;
 esac
 
 val3=$(cat /tmp/aroma-data/freq3.prop | cut -d '=' -f2)
@@ -187,12 +169,6 @@ case $val3 in
 	  ;;
 	12)
 	  oc3="oc3=2160000"
-	  ;;
-	13)
-	  oc3="oc3=2214000"
-	  ;;
-	14)
-	  oc3="oc3=2295000"
 	  ;;
 esac
 
