@@ -30,7 +30,7 @@
 static DEFINE_MUTEX(fsync_mutex);
 
 bool early_suspend_active = false;
-static bool dyn_fsync_active = true;
+static int dyn_fsync_active = 0;
 
 static ssize_t dyn_fsync_active_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
@@ -97,12 +97,11 @@ static void dyn_fsync_early_suspend(struct early_suspend *h)
 	mutex_lock(&fsync_mutex);
 	if (dyn_fsync_active) {
 		early_suspend_active = true;
-#if 1
+
 		/* flush all outstanding buffers */
 		wakeup_flusher_threads(0,0);
 		sync_filesystems(0);
 		sync_filesystems(1);
-#endif
 	}
 	mutex_unlock(&fsync_mutex);
 }
