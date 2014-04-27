@@ -1,3 +1,9 @@
+[4/26/2014]
+-Linux 3.4.88
+-use arm-cortex_a15-linux-gnueabihf-linaro_4.9.1-2014.04 toolchain
+-No need to scale L2 cache speed with CPU freqs
+-Added more frequency steps on the lower side, tweaked and adjusted L2 cache speed, and removed 2214000mhz and 2295000mhz OC levels.
+
 [4/25/2014]
 -sched/fair: Optimize find_busiest_queue() 
 -sched/fair: Optimize cgroup pick_next_task_fair() 
