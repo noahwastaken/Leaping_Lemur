@@ -32,7 +32,6 @@
        mkdir -p "out/$c/system/lib/modules/"
 
   m=$k/out/$c/system/lib/modules
-  z=$c-$today
 
 TOOLCHAIN=/home/tal/custom-gcc-kernel-toolchains/arm-eabi/arm-eabi-4.10/bin/arm-eabi-
 export ARCH=arm
@@ -61,9 +60,14 @@ make -j`grep 'processor' /proc/cpuinfo | wc -l` CROSS_COMPILE=$TOOLCHAIN #>> com
 # Build Zip
  clear
    echo "Creating $z.zip"
+# Version Number to add to zip
+   echo "Version Number"
+VERSION=$(cat '.version')
+  z=$c-"r${VERSION}"-$today
      cd $k/out/$c/
        7z a "$z.zip"
          mv $z.zip $k/out/$z.zip
+
 # cp $k/out/$z.zip $db/$z.zip
 #           rm -rf $k/out/$c
 # Line below for debugging purposes,  uncomment to stop script after each config is run
