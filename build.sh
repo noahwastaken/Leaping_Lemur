@@ -7,6 +7,10 @@
 # Date to add to zip
   today=$(date +"%m%d%Y")
 
+# Clean Kernel
+   echo "Clean Kernel"
+     make clean
+
 # Clean old builds
    echo "Clean"
      rm -rf $k/out
