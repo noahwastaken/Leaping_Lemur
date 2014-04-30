@@ -1,5 +1,24 @@
 #!/bin/bash
 
+# Colorize and add text parameters
+red=$(tput setaf 1)             #  red
+grn=$(tput setaf 2)             #  green
+cya=$(tput setaf 6)             #  cyan
+txtbld=$(tput bold)             # Bold
+bldred=${txtbld}$(tput setaf 1) #  red
+bldgrn=${txtbld}$(tput setaf 2) #  green
+bldblu=${txtbld}$(tput setaf 4) #  blue
+bldcya=${txtbld}$(tput setaf 6) #  cyan
+txtrst=$(tput sgr0)             # Reset
+
+# Get Build Startup Time
+if [ -z "$OUT_TARGET_HOST" ]
+then
+   res1=$(date +%s.%N)
+else
+   res1=$(gdate +%s.%N)
+fi
+
 # Path to build your kernel
   k=~/lemur
 # Directory for the any kernel updater
@@ -7,12 +26,33 @@
 # Date to add to zip
   today=$(date +"%m%d%Y")
 
+
+echo -e "${bldcya}Building ${bldcya}Leaping ${bldcya}Lemur ${bldcya}Kernel ${txtrst}";
+echo -e "${bldred}______________________________________________${txtrst}"
+echo -e "${bldcya}______________________________________________${txtrst}"
+echo -e "${bldred}______________________________________________${txtrst}"
+echo -e "${bldblu}______________________________________________${txtrst}"
+echo -e "${bldcya}Get ${bldred}ready!!!!!!!!!!!!!!!!!!!!${txtrst}"                    
+echo -e "${bldred}My ${bldred}kernel ${bldred}is ${bldred}for ${bldred}android ${bldred}only${txtrst}"
+echo -e "${bldblu}Packed ${bldred}with ${bldred}A1 ${bldred}Sawce!!!!!!!!!${txtrst}"
+echo -e "${bldcya}______________________________________________${txtrst}"
+echo -e "${bldred}Leaping_Lemur>>>>>>${bldred}Regular ${bldred}Lemurs${txtrst}"
+echo -e "${bldblu}Leaping_Lemur>>>>>>${bldred}Regular ${bldred}Lemurs${txtrst}"
+echo -e "${bldcya}______________________________________________${txtrst}"
+echo -e "${bldred}Leaping_Lemur>>>>>>${bldred}Regular ${bldred}Lemurs${txtrst}"
+echo -e "${bldcya}Leaping_Lemur>>>>>>${bldred}Regular ${bldred}Lemurs${txtrst}"
+echo -e "${bldred}______________________________________________${txtrst}"
+echo -e "${bldblu}______________________________________________${txtrst}"
+echo -e "${bldcya}______________________________________________${txtrst}"
+echo -e "${bldblu}______________________________________________${txtrst}"
+
+
 # Clean Kernel
-   echo "Clean Kernel"
+   echo "${bldcya}Clean ${bldcya}Kernel${txtrst}"
      make clean
 
 # Clean old builds
-   echo "Clean"
+   echo "${bldred}Clean ${bldred}Out ${bldred}Folder${txtrst}"
      rm -rf $k/out
 #     make clean
 
@@ -50,7 +90,7 @@ make -j`grep 'processor' /proc/cpuinfo | wc -l` CROSS_COMPILE=$TOOLCHAIN #>> com
 
 # Grab modules & zImage
    echo ""
-   echo "<<>><<>>  Collecting modules and zimage <<>><<>>"
+   echo "<<>><<>> ${bldred}Collecting ${bldred}modules ${bldred}and ${bldred}zimage${txtrst} <<>><<>>"
    echo ""
    cp $k/arch/arm/boot/zImage out/$c/boot/lemur.zImage
    for mo in $(find . -name "*.ko"); do
@@ -59,9 +99,10 @@ make -j`grep 'processor' /proc/cpuinfo | wc -l` CROSS_COMPILE=$TOOLCHAIN #>> com
 
 # Build Zip
  clear
-   echo "Creating $z.zip"
+   echo "${bldcya}Creating ${bldcya}$z.zip${txtrst}"
+
 # Version Number to add to zip
-   echo "Version Number"
+   echo "${bldblu}Version ${bldblu}Number${txtrst}"
 VERSION=$(cat '.version')
   z=$c-"r${VERSION}"-$today
      cd $k/out/$c/
@@ -73,3 +114,18 @@ VERSION=$(cat '.version')
 # Line below for debugging purposes,  uncomment to stop script after each config is run
 #read this
       done
+
+# Get Build Time
+if [ -z "$OUT_TARGET_HOST" ]
+then
+   res2=$(date +%s.%N)
+else
+   res2=$(gdate +%s.%N)
+fi
+
+echo "${bldgrn}Total ${bldblu}time ${bldred}elapsed: ${txtrst}${grn}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
+echo "************************************************************************"
+echo "${bldylw}${bldred}Build ${bldcya}Numba ${bldblu}${VERSION} ${txtrst}"
+echo "${bldylw}${bldred}My ${bldcya}Kernels ${bldblu}Build ${bldred}Fast${txtrst}"
+echo "************************************************************************"
+
