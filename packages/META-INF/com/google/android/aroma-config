@@ -31,10 +31,10 @@
 # * AROMA Temporary Dir = /tmp/aroma/
 
 ini_set("rom_name",             "Leaping Lemur");
-ini_set("rom_version",          "Build #80");
+ini_set("rom_version",          "Build #82");
 ini_set("rom_author",           "Tal Noah");
 ini_set("rom_device",           "Sprint HTC One");
-ini_set("rom_date",             "Apr 29, 2014");
+ini_set("rom_date",             "Apr 30, 2014");
 
 ini_set("force_colorspace","rgba");
 ini_set("dp","6");
