@@ -73,7 +73,7 @@ echo -e "${bldblu}______________________________________________${txtrst}"
 
   m=$k/out/$c/system/lib/modules
 
-TOOLCHAIN=/home/tal/custom-gcc-kernel-toolchains/arm-eabi/arm-eabi-4.10/bin/arm-eabi-
+TOOLCHAIN=/home/tal/custom-gcc-kernel-toolchains/arm-cortex_a15/arm-cortex_a15-linux-gnueabihf-linaro_4.9.1-2014.04/bin/arm-cortex_a15-linux-gnueabihf-
 export ARCH=arm
 export SUBARCH=arm
 
