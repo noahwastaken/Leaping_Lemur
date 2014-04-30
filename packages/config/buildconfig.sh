@@ -231,6 +231,8 @@ elif [ $SCHED = 8 ]; then
   echo "SCHED=8" >> $CONFIGFILE;
 elif [ $SCHED = 9 ]; then
   echo "SCHED=9" >> $CONFIGFILE;
+elif [ $SCHED = 10 ]; then
+  echo "SCHED=10" >> $CONFIGFILE;
 fi
 
 #Readahead buffer size

@@ -1,3 +1,21 @@
+[4/29/2014]
+-enable turbo mode
+-writeback: fix writeback cache thrashing
+-kswapd: reduce time spent in congestion_wait 
+-mm: vmscan: Move pages that fail swapout to LRU active list
+-events: perf: Fix hotplug stat
+-kgsl: Fix mem leak when page allocation fails 
+-sched: fix isolated CPUs leaving root_task_group
+-net: loopback: set default mtu to 64K
+-kmemleak: Replace list_for_each_continue_rcu with new interface 
+-adjustment needed to use jump_label
+-adjustment to dynamic fsync 
+-Remove scsi_wait_scan module
+-S2W/L2W/DT2W: Make vibration more immediate when activated
+-build: switch to sabermod arm-eabi-4.10 
+-Makefile: add more optimization flags 
+-block: Add TripnDroid IOSCHED
+
 [4/26/2014]
 -Linux 3.4.88
 -use arm-cortex_a15-linux-gnueabihf-linaro_4.9.1-2014.04 toolchain

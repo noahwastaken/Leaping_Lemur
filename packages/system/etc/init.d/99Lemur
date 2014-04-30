@@ -346,6 +346,9 @@ elif [ "`grep SCHED=8 $LEMUR_CONF`" ]; then
 elif [ "`grep SCHED=9 $LEMUR_CONF`" ]; then
   echo noop > /sys/block/mmcblk0/queue/scheduler;
   echo NOOP io scheduler >> $LEMUR_LOGFILE;
+elif [ "`grep SCHED=10 $LEMUR_CONF`" ]; then
+  echo tripndroid > /sys/block/mmcblk0/queue/scheduler;
+  echo TripNDroid io scheduler >> $LEMUR_LOGFILE;
 else
   echo row > /sys/block/mmcblk0/queue/scheduler;
   echo ROW io scheduler >> $LEMUR_LOGFILE;
