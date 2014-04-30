@@ -359,7 +359,7 @@ CFLAGS_MODULE   = $(MODFLAGS)
 AFLAGS_MODULE   = $(MODFLAGS)
 LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds
 CFLAGS_KERNEL	= $(KERNELFLAGS) -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
-AFLAGS_KERNEL	= $(KERNELFLAGS)
+AFLAGS_KERNEL	= $(KERNELFLAGS) -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
 
@@ -386,10 +386,10 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fsingle-precision-constant -pipe -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block \
 		   -funswitch-loops
  
-KBUILD_AFLAGS_KERNEL := -O3
+KBUILD_AFLAGS_KERNEL := -O3 -fgcse-sm -fsched-spec-load -fsingle-precision-constant -mtune=cortex-a15 -marm -mcpu=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -mvectorize-with-neon-quad -fno-inline-functions -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 KBUILD_CFLAGS_KERNEL := -O3 -fgcse-sm -fsched-spec-load -fsingle-precision-constant -mtune=cortex-a15 -marm -mcpu=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -mvectorize-with-neon-quad -fno-inline-functions -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 KBUILD_AFLAGS   := -D__ASSEMBLY__
-KBUILD_AFLAGS_MODULE  := -DMODULE
+KBUILD_AFLAGS_MODULE  := -DMODULE -O3 -fgcse-sm -fsched-spec-load -fsingle-precision-constant -mtune=cortex-a15 -marm -mcpu=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -mvectorize-with-neon-quad -fno-inline-functions -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 KBUILD_CFLAGS_MODULE  := -DMODULE -O3 -fgcse-sm -fsched-spec-load -fsingle-precision-constant -mtune=cortex-a15 -marm -mcpu=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -mvectorize-with-neon-quad -fno-inline-functions -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
 KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
