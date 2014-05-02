@@ -77,7 +77,7 @@ static bool has_intersects_mems_allowed(struct task_struct *tsk,
 {
 	struct task_struct *start = tsk;
 
-	for_each_thread(start, tsk) {
+	do {
 		if (mask) {
 			if (mempolicy_nodemask_intersects(tsk, mask))
 				return true;
@@ -85,7 +85,7 @@ static bool has_intersects_mems_allowed(struct task_struct *tsk,
 			if (cpuset_mems_allowed_intersects(current, tsk))
 				return true;
 		}
-	}
+	} while_each_thread(start, tsk);
 
 	return false;
 }
@@ -99,14 +99,14 @@ static bool has_intersects_mems_allowed(struct task_struct *tsk,
 
 struct task_struct *find_lock_task_mm(struct task_struct *p)
 {
-	struct task_struct *t;
+	struct task_struct *t = p;
 
-	for_each_thread(p, t) {
+	do {
 		task_lock(t);
 		if (likely(t->mm))
 			return t;
 		task_unlock(t);
-	}
+	} while_each_thread(p, t);
 
 	return NULL;
 }
@@ -225,7 +225,7 @@ static struct task_struct *select_bad_process(unsigned int *ppoints,
 	struct task_struct *chosen = NULL;
 	*ppoints = 0;
 
-	for_each_process_thread(g, p) {
+	do_each_thread(g, p) {
 		unsigned int points;
 
 		if (p->exit_state)
@@ -257,7 +257,7 @@ static struct task_struct *select_bad_process(unsigned int *ppoints,
 			chosen = p;
 			*ppoints = points;
 		}
-	}
+	} while_each_thread(g, p);
 
 	return chosen;
 }
@@ -312,7 +312,7 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 {
 	struct task_struct *victim = p;
 	struct task_struct *child;
-	struct task_struct *t;
+	struct task_struct *t = p;
 	struct mm_struct *mm;
 	unsigned int victim_points = 0;
 	static DEFINE_RATELIMIT_STATE(oom_rs, DEFAULT_RATELIMIT_INTERVAL,
@@ -331,7 +331,7 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 		message, task_pid_nr(p), p->comm, points);
 	task_unlock(p);
 
-	for_each_thread(p, t) {
+	do {
 		list_for_each_entry(child, &t->children, sibling) {
 			unsigned int child_points;
 
@@ -344,7 +344,7 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 				victim_points = child_points;
 			}
 		}
-	}
+	} while_each_thread(p, t);
 
 	victim = find_lock_task_mm(victim);
 	if (!victim)
