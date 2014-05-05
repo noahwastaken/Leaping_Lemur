@@ -26,27 +26,6 @@ fi
 # Date to add to zip
   today=$(date +"%m%d%Y")
 
-
-echo -e "${bldcya}Building ${bldcya}Leaping ${bldcya}Lemur ${bldcya}Kernel ${txtrst}";
-echo -e "${bldred}______________________________________________${txtrst}"
-echo -e "${bldcya}______________________________________________${txtrst}"
-echo -e "${bldred}______________________________________________${txtrst}"
-echo -e "${bldblu}______________________________________________${txtrst}"
-echo -e "${bldcya}Get ${bldred}ready!!!!!!!!!!!!!!!!!!!!${txtrst}"                    
-echo -e "${bldred}My ${bldred}kernel ${bldred}is ${bldred}for ${bldred}android ${bldred}only${txtrst}"
-echo -e "${bldblu}Packed ${bldred}with ${bldred}A1 ${bldred}Sawce!!!!!!!!!${txtrst}"
-echo -e "${bldcya}______________________________________________${txtrst}"
-echo -e "${bldred}Leaping_Lemur>>>>>>${bldred}Regular ${bldred}Lemurs${txtrst}"
-echo -e "${bldblu}Leaping_Lemur>>>>>>${bldred}Regular ${bldred}Lemurs${txtrst}"
-echo -e "${bldcya}______________________________________________${txtrst}"
-echo -e "${bldred}Leaping_Lemur>>>>>>${bldred}Regular ${bldred}Lemurs${txtrst}"
-echo -e "${bldcya}Leaping_Lemur>>>>>>${bldred}Regular ${bldred}Lemurs${txtrst}"
-echo -e "${bldred}______________________________________________${txtrst}"
-echo -e "${bldblu}______________________________________________${txtrst}"
-echo -e "${bldcya}______________________________________________${txtrst}"
-echo -e "${bldblu}______________________________________________${txtrst}"
-
-
 # Clean Kernel
    echo "${bldcya}Clean ${bldcya}Kernel${txtrst}"
      make clean
