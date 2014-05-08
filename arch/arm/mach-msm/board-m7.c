@@ -3543,8 +3543,7 @@ static struct cm3629_platform_data cm36282_pdata_sk2 = {
 	.model = CAPELLA_CM36282,
 	.ps_select = CM3629_PS1_ONLY,
 	.intr = PM8921_GPIO_PM_TO_SYS(PROXIMITY_INT),
-	.levels = { 12, 14, 77, 566, 1360, 4793, 8101, 13240, 18379, 65535},
-	.correction = {100, 400, 900, 1600, 2500, 3600, 4900, 6400, 8100, 10000},
+	.levels = { 0xC, 0xE, 0x10, 0x29, 0x53, 0xDE9, 0x17C2, 0x19E4, 0x1C00, 0xFFFF},
 	.golden_adc = 0x1724,
 #ifdef CONFIG_WSENSOR_ENABLE
 	.w_golden_adc = 0x1AE0,
@@ -3581,8 +3580,7 @@ static struct cm3629_platform_data cm36282_pdata_r8 = {
 	.model = CAPELLA_CM36282,
 	.ps_select = CM3629_PS1_ONLY,
 	.intr = PM8921_GPIO_PM_TO_SYS(PROXIMITY_INT),
-	.levels = { 8, 20, 30, 200, 400, 2500, 3688, 6589, 9491, 65535},
-	.correction = {100, 400, 900, 1600, 2500, 3600, 4900, 6400, 8100, 10000},
+	.levels = { 0xC, 0xE, 0x10, 0xB0, 0x169, 0x1049, 0x1AEB, 0x25BE, 0x3091, 0xFFFF},
 	.golden_adc = 0xA7D,
 #ifdef CONFIG_WSENSOR_ENABLE
 	.w_golden_adc = 0x1AE0,
