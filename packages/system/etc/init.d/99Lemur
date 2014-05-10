@@ -145,12 +145,6 @@ if [ "`grep EXFAT=1 $LEMUR_CONF`" ]; then
   echo exFAT support enabled >> $LEMUR_LOGFILE;
 fi
 
-#Load color/gamma module
-if [ "`grep COLOR=1 $LEMUR_CONF`" ]; then
-  insmod /system/lib/modules/msm_kcal_ctrl.ko
-  echo Color Control enabled >> $LEMUR_LOGFILE;
-fi
-
 #Set BLN
 if [ "`grep BLN=1 $LEMUR_CONF`" ]; then
   echo 1 > /sys/class/leds/button-backlight/blink_buttons
@@ -363,6 +357,15 @@ echo Readahead size\: $READAHEAD >> $LEMUR_LOGFILE;
 if [ "`grep GBOOST=0 $LEMUR_CONF`" ]; then
   echo 0 >  /sys/devices/system/cpu/cpufreq/ondemand/gboost;
   echo gboost disabled >> $LEMUR_LOGFILE;
+fi
+
+#Thermal Throttle
+if [ "`grep THROTTLE=1 $LEMUR_CONF`" ]; then
+  echo Y > /sys/module/msm_thermal/parameters/enabled
+echo Thermal Throttle enabled >> $LEMUR_LOGFILE;
+else
+  echo N > /sys/module/msm_thermal/parameters/enabled
+  echo Thermal Throttle disabled >> $LEMUR_LOGFILE;
 fi
 
 #mpdecision settings

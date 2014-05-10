@@ -255,6 +255,7 @@ checkbox(
   "Enable graphics boost","Better gaming performance",0,
   "Disable HTC pnpmgr","HTC pnpmgr ensures smooth ui, recommend leaving it enabled",0,
   "Optimized Bionic Libraries","For GPE users only",0,
+  "Enable Thermal Throttle","SOC temperature limit toggle",0,
   "Enable exFAT support","",0
 );
   

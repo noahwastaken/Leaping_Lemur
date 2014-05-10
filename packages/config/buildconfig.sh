@@ -149,7 +149,7 @@ fi
 #Optimized Bionic Libraries
 BIONIC=`grep "item.0.8" /tmp/aroma/mods.prop | cut -d '=' -f2`
 echo -e "\n\n##### Bionic Libraries ######\n# 1 to Optimized Bionic Libraries\n# 0 to disable\n" >> $CONFIGFILE
-if [ $EXFAT = 1 ]; then
+if [ $BIONIC = 1 ]; then
   echo "BIONIC=1" >> $CONFIGFILE;
 else
   echo "BIONIC=0" >> $CONFIGFILE;
@@ -162,6 +162,15 @@ if [ $DYN_FSYNC = 1 ]; then
   echo "DYN_FSYNC=0" >> $CONFIGFILE;
 else
   echo "DYN_FSYNC=1" >> $CONFIGFILE;
+fi
+
+#Thermal Throttle
+THROTTLE=`grep "item.1.0" /tmp/aroma/mods.prop | cut -d '=' -f2`
+echo -e "\n\n##### Thermal Throttle #####\n# Y to enable (default)\n# N to disable\n" >> $CONFIGFILE
+if [ $THROTTLE = 1 ]; then
+  echo "THROTTLE=1" >> $CONFIGFILE;
+else
+  echo "THROTTLE=0" >> $CONFIGFILE;
 fi
 
 #GPU OC
