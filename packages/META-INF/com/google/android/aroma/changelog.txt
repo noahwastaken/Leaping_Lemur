@@ -1,205 +1,45 @@
-[4/30/2014]
--Switched back to arm-cortex_a15-linux-gnueabihf-linaro_4.9.1-2014.04
--Added more optimization flags
--Raised L2 cache level of all overclocked frequencies at each level. Raised VREG_CORE level to 1400000. Raised USERCONTROL_MAX_VDD level to 1400000.
--Added -fno-tree-vectorize flag to host flags 
--Added 81000mhz frequency step
--Increased bus freq at lowest GPU frequency 
+To find my latest changes go to my github source:
 
-[4/29/2014]
--enable turbo mode
--writeback: fix writeback cache thrashing
--kswapd: reduce time spent in congestion_wait 
--mm: vmscan: Move pages that fail swapout to LRU active list
--events: perf: Fix hotplug stat
--kgsl: Fix mem leak when page allocation fails 
--sched: fix isolated CPUs leaving root_task_group
--net: loopback: set default mtu to 64K
--kmemleak: Replace list_for_each_continue_rcu with new interface 
--adjustment needed to use jump_label
--adjustment to dynamic fsync 
--Remove scsi_wait_scan module
--S2W/L2W/DT2W: Make vibration more immediate when activated
--build: switch to sabermod arm-eabi-4.10 
--Makefile: add more optimization flags 
--block: Add TripnDroid IOSCHED
-
-[4/26/2014]
--Linux 3.4.88
--use arm-cortex_a15-linux-gnueabihf-linaro_4.9.1-2014.04 toolchain
--No need to scale L2 cache speed with CPU freqs
--Added more frequency steps on the lower side, tweaked and adjusted L2 cache speed, and removed 2214000mhz and 2295000mhz OC levels.
-
-[4/25/2014]
--sched/fair: Optimize find_busiest_queue() 
--sched/fair: Optimize cgroup pick_next_task_fair() 
--update some qdsp6v2 audio format drivers to latest CAF
--WORKQUEUE: introduce Linaro Power Efficient Workqueues system wide (Linaro)
--backported 3.12+ kernel scheduler features/fixes/enhancements (faux123/kernel.org for better multitasking etc)
--reduce memory usage by input driver
--remove old slimbus drivers. 
--ported slimbus drivers from HTC m8/Nexus 5 (same driver)
--cpufreq: Break out early if target frequency is the same as the current
--cpufreq: Save user policy min/max instead of policy min/max during hotplug
--ondemand: Remove unnecessary synchronization attempt
--changes to sound control @thicklizard
-
-[4/24/2014]
--Squashed intelliplug and all related commits
--Added bricked thermal replacing crpalmers solution
--Added bricked mpdecision replacing htc's/qcom's solution
--If kswapd has been running too long, allow it to sleep 
--change oom_kill.c to use for_each_thread() 
--introduce for_each_thread() to replace the buggy while_each_thread()
--lowmemorykiller.c: convert to use for_each_thread 
--cpufreq: Fix policy getting stuck when user & kernel min/max don't overlap
--exfat: hacked name for HTC's hardcoded vold 
--exfat: more HTC vold mount option hacks!
--got rid of __cpuinit
--Remove flags in Aflags
--Removed deprecated governors
--Slim down kernel
-
-[4/18/2014]
--Linux Version 3.4.87
--Removed CPUQUIET Power Management
--TIME: update some functions of timekeeping.c to latest CAF
--Resolve CPUFREQ_NOTIFY issue
--enable quad core cpu stats
--ACPUCLOCK: scale L2 cache and CPU freqs in sync CPU speed and L2 cache
--decrease PHY_SUSPEND_TIMEOUT_USEC to 200 (from 500)
--Keep HSIC in Low Power Mode
--Prevent system suspend when HSIC device is active
--qdsp6v2: Propagate device HW delay to AFE
--Added Buffer overflow check 
--switched to arm-cortex_a15-linux-gnueabihf-linaro_4.8.3-2014.04 toolchain
--SELinux: Reduce overhead of mls_level_isvalid() function call 
--kernel: Replace timeconst.pl with a bc script
--tcp small queues
--fix conflicting types for tcp_write_xmit 
--tcp: add auto corking feature 
--tcp: network speed tweak 
--remove a lot of debugging
--Make GENTLE_FAIR_SLEEPERS configurable thru sysfs 
--Memory allocated by kstrdup should be freed
--Try setting slub_max_order to zero
--Adjust dirty writeback for IO boost
--Always set noatime no diratime on all partitions! I/O Boost!
-
-[4/17/2014]
--Added CPUQuiet Power Management by @maxwen
--introduce OndemandPLUS governor
--Sound Mods (thicklizard)
--add more linaro build flags....
--fgraphite, -ftree-slp-vectorize, -fvect-cost-model, -ftree-partial-pre, -fipa-cp-clone,-mvectorize-with-neon-quad to name a few
--switch to CONFIG_CC_OPTIMIZE_ALOT or -O3
-
-[4/15/2014]
--introduce PRESERVATIVE governor by @bedalus
--increase BUS frequencies
--removing media_tuner @poondog
--Optimize build_sched_domains() for saving first SD node
--Create for_each_sd_topology()
--remove handset pop-noise
--Add slimbus device driver unregistration function
--Handle channel control correctly if controller manages BW
--Fix pop noise seen with touch tone during playback
--Control interface clock if it's specified
--Add PCM creation API for internal PCMs
--use generic atomic_dec-based implementation for ARMv6+
--Reduce overhead under high-freq idling patterns
-
-[4/14/2014]
--Fix Z180 memory leak
--Linux 3.4.20-3.4.40
--switch to full -O3
--add an API to log wakeup reasons 
--fix compile warnings in log_wakeup_reason 
--Makefile flags and optimizations
--Enable unaligned memory access
--MEM: allow lowmem to be non contiguous and mixed
--mm: remove swap token code
--ARM: net: JIT compiler for packet filters enabled by default
--ARM: smp: Wait just 1 second for other CPU to halt
--sound mods
--mm.backingdev tweak
--reduce time to enter deep sleep
--tweak writeback ratios
--fix race that cause writeback hung
--switch to arm-cortex_a15-linux-gnueabihf-linaro_4.8.3-2014.03
-
-[4/6/2014]
--adaptation to full neon-vfpv4 support
--ext4 mods and tuning
--random32 and prandom mods
--fix performance regression in O_DIRECT writes to md block devices
--writeback: fix occasional slow sync(1) 
--ext4: fix memory leak in xattr
--intelliactive: make touch boost interface generic
-
-[4/4/2014]
--Implement writer lock-stealing for better scalability
--Improve touchscreen sensitivity
--Do not hardcode pressure & width
--random: allow architectures to optionally define random_get_entropy() 
--random: adjustments, modifications
--softirq: reduce latencies
--timer: optimize apply_slack() 
--ARCH: makefile adjustments (morfic and poondog)
--scripts: add compiler time variables (ziggy471)
--SCHED: LOAD_FREQ (4*HZ+61)
--fix graphical slowness on wakeup
-
-[4/2/2014]
--Linux version 3.4.20
--improved fairness efficiency 
--disabled shadow_writes
--Optimize cgroup pick_next_task_fair() 
--Optimize find_busiest_queue()
--Removed PAGE_ALLOC_COSTLY_ORDER for a 3% boost
-
-[3/30/14]
--Reverted back to Linux verion 3.4.10
--Intelliplug (intelligent hotplugging by faux123)
--memcpy, memmove, copy_page optimization 
--enabled MOTOROLA MEMUTILS OPT
--reverted fm radio fix
--Added option to choose io scheduler in aroma
--Added option to choose readahead buffer size in aroma
--Added option to enable or disable Dynamic Fsync in aroma\
--Fixed F2W/F2S and P2W options in aroma
--Sound Mods
-
-[3/27/14]
--FS: import F2FS
--reduce and fix wakelock issues
--redo synaptic algorithms
--Add governor selection to aroma
--FM radio for sense 6
--msm: Add 16 bit PCM as default format for backend
--irq: Set CPU affinity right on thread creation
--cpufreq: Optimize cpufreq_frequency_table_verify() .
--vfp/ test hard float 
--enable input boost and add some tunables in ondemand
--fix logo2wake deep sleep
-
-[2/24/14]
+http://github.com/Lens-F/Leaping_lemur
 
 Features:
 
--MP-Decision
--Thermal
+-Linux 3.4.89
+-MSM_MPDecision with full control in trickster
+-MSM_Thermal with Temperature Throttle
 -Dynamic_Fsync
 -Vfp + Neon optimizations from Linaro
--Linaro -o3 with tons of extra flags from neon, vfp, and cortex-a15
--Linaro 4.7.4 Cortex-a15 toolchain
--Bfq,Cfq,Sio,Vr,Zen,Fiops,Row,Noop, and Deadline IO-Schedulers
--Lionheart, Smartmax, Wheatley, Intellidemand, Intelliactive, Abyssplugv2, Badass, Lagfree, Asswas, Smartass2, SmartassH3, SavagedZen, DanceDance, and Darkness cpufreq governors
+-Linaro -O3 with tons of extra flags such as neon, vfp, graphite and cortex-a15 optimizations
+-Linaro 4.9.1 Cortex-a15 toolchain
+-Bfq,Cfq,Sio,Vr,Zen,Fiops,Row,Noop,TripNDroid, and Deadline IO-Schedulers
+-Lionheart, Smartmax, Wheatley, Intellidemand, Intelliactive, Badass, Lagfree, StockDemand, OndemandPLUS, Preservative, and DanceDance cpufreq governors
 -S2W/S2S/DT2W/L2M/L2W/P2W/F2W/F2S
 -Pocket Detection
 -Backlight Notification (bln)
 -GPU OC
 -CPU OC
+-Max Screen Off
 -Faux Sound
 -Gamma Control
 -UV Control
+-F2FS support
+-Slimbus OC/Tweaks and Enhancements
+-oom tweaks
+-Sound Mods
+-Power Efficient Workqueue
+-Exfat Support
+-Removed Lots of Debugging
+-tcp network tweaks
+-Reduced Wakelocks
+-Frandom
+-Improvements to touchscreen sensitivity
+-LOAD_FREQ (4*HZ+61)
+-memcpy, memmove, and copy_page optimizations from Motorola
+-RWSEM_XCHGADD_ALGORITHM
+-LZ4
+-DCACHE_WORD_ACCESS
+-VFS_CACHE_PRESSURE
+-STRNCPY_FROM_USER
+-STRNLEN_USER
+
+
