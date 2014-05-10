@@ -37,7 +37,7 @@ static void __cpuinit msm_sleeper_early_suspend(struct early_suspend *h)
 			msm_cpufreq_set_freq_limits(cpu, MSM_CPUFREQ_NO_LIMIT, maxscroff_freq);
 		}
 		limit_set = true;
-		pr_info("msm-sleeper: limit max frequency to: %d\n", maxscroff_freq);
+		//pr_info("msm-sleeper: limit max frequency to: %d\n", maxscroff_freq);
 	}
 	return; 
 }
@@ -53,7 +53,7 @@ static void __cpuinit msm_sleeper_late_resume(struct early_suspend *h)
 		msm_cpufreq_set_freq_limits(cpu, MSM_CPUFREQ_NO_LIMIT, MSM_CPUFREQ_NO_LIMIT);
 	}
 	limit_set = 0;
-	pr_info("msm-sleeper: restore max frequency.\n");
+	//pr_info("msm-sleeper: restore max frequency.\n");
 	return; 
 
 }
