@@ -1392,8 +1392,8 @@ static void batt_level_adjust(unsigned long time_since_last_update_ms)
 			cur_jiffies = jiffies;
 			level_since_last_update_ms =
 			(cur_jiffies - pre_jiffies) * MSEC_PER_SEC / HZ;
-			BATT_LOG("%s: total_time since last batt level update = %lu ms.",
-					__func__, level_since_last_update_ms);
+			//BATT_LOG("%s: total_time since last batt level update = %lu ms.",
+			//		__func__, level_since_last_update_ms);
 			if (time_since_last_update_ms < DISCHG_UPDATE_PERIOD_MS &&
 				level_since_last_update_ms < DISCHG_UPDATE_PERIOD_MS) {
 				htc_batt_info.rep.level = prev_level;
@@ -1981,7 +1981,7 @@ static void batt_worker(struct work_struct *work)
 										htc_batt_info.rep.charging_source;
 
 		
-		pr_info("[BATT] prev_chg_src=%d, prev_chg_en=%d,"
+		/*pr_info("[BATT] prev_chg_src=%d, prev_chg_en=%d,"
 				" chg_dis_reason/control/active=0x%x/0x%x/0x%x,"
 				" chg_limit_reason/active=0x%x/0x%x,"
 				" pwrsrc_dis_reason=0x%x, prev_pwrsrc_enabled=%d,"
@@ -1996,7 +1996,7 @@ static void batt_worker(struct work_struct *work)
 					pwrsrc_dis_reason, prev_pwrsrc_enabled,
 					context_state, pre_screen_state, screen_state,
 					htc_batt_info.htc_extension,
-					sw_stimer_counter);
+					sw_stimer_counter);*/
 
 		
 		if(htc_batt_info.icharger->is_pmic_aicl_enable != NULL)
@@ -2098,7 +2098,7 @@ static void batt_worker(struct work_struct *work)
 	pre_screen_state = screen_state;
 
 	wake_unlock(&htc_batt_timer.battery_lock);
-	pr_info("[BATT] %s: done\n", __func__);
+	//pr_info("[BATT] %s: done\n", __func__);
 	return;
 }
 
