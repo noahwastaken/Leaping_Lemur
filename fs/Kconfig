@@ -13,12 +13,6 @@ config VFS_CACHE_PRESSURE
   	default 50
   	help
 
-config DYNAMIC_FSYNC
-	bool "dynamic file sync control"
-  	default n
-  	help
-    	  An experimental file sync control using Android's early suspend / late resume drivers
-
 if BLOCK
 
 source "fs/ext2/Kconfig"
@@ -308,6 +302,11 @@ config EXFAT_VERSION
 	string "Tuxera EXFAT version"
 	depends on EXFAT_FS
 	default "target/htc.d/htc"
+
+config ASYNC_FSYNC
+	bool
+	string "asynchronous fsync"
+	default n
 
 config RESTRICT_ROOTFS_SLAVE
 	bool "Android: Restrict rootfs slave mountspace to /storage"
