@@ -259,13 +259,13 @@ elif [ "`grep COLOR_ENHANCE=1 $LEMUR_CONF`" ]; then
   echo HTC color enhance enabled >> $LEMUR_LOGFILE;
 fi
 
-#Dynamic Fsync
-if [ "`grep DYN_FSYNC=0 $LEMUR_CONF`" ]; then
-  echo 0 > /sys/kernel/dyn_fsync/Dyn_fsync_active;
-  echo Dynamic Fsync disabled >> $LEMUR_LOGFILE;
+#Set fsync
+if [ "`grep FSYNC=0 $LEMUR_CONF`" ]; then
+  echo 0 > /sys/module/sync/parameters/fsync_enabled;
+  echo fsync disabled >> $LEMUR_LOGFILE;
 else
-  echo 1 > /sys/kernel/dyn_fsync/Dyn_fsync_active;
-  echo Dynamic Fsync enabled >> $LEMUR_LOGFILE;
+  echo 1 > /sys/module/sync/parameters/fsync_enabled;
+  echo fsync enabled >> $LEMUR_LOGFILE;
 fi
 
 #fstrim

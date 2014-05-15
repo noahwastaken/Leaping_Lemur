@@ -250,7 +250,7 @@ checkbox(
   "Enable Logo2menu","Use HTC logo as menu button",0,
   "Enable Button Light Notification","",0,
   "Enable USB fastcharge","",0,
-  "Disable Dynamic Fsync","Faster fileystem performance, but risk of data loss",0,
+  "Disable fsync","Faster fileystem performance, but risk of data loss",0,
   "Disable HTC color enhancement","truer color",0,
   "Enable graphics boost","Better gaming performance",0,
   "Disable HTC pnpmgr","HTC pnpmgr ensures smooth ui, recommend leaving it enabled",0,

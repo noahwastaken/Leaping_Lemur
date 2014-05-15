@@ -155,13 +155,13 @@ else
   echo "BIONIC=0" >> $CONFIGFILE;
 fi
 
-#Dynamic Fsync
-DYN_FSYNC=`grep "item.0.9" /tmp/aroma/mods.prop | cut -d '=' -f2`
-echo -e "\n\n##### Dynamic Fsync ######\n# 1 to enable (default)\n# 0 to disable\n" >> $CONFIGFILE
-if [ $DYN_FSYNC = 1 ]; then
-  echo "DYN_FSYNC=0" >> $CONFIGFILE;
+#fsync
+FSYNC=`grep "item.0.9" /tmp/aroma/mods.prop | cut -d '=' -f2`
+echo -e "\n\n##### fsync Settings ######\n# 1 to enable (default)\n# 0 to disable\n" >> $CONFIGFILE
+if [ $FSYNC = 1 ]; then
+  echo "FSYNC=0" >> $CONFIGFILE;
 else
-  echo "DYN_FSYNC=1" >> $CONFIGFILE;
+  echo "FSYNC=1" >> $CONFIGFILE;
 fi
 
 #Thermal Throttle
