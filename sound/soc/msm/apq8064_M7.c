@@ -1202,13 +1202,13 @@ static int msm_btsco_rate_put(struct snd_kcontrol *kcontrol,
 {
 	switch (ucontrol->value.integer.value[0]) {
 	case 0:
-		msm_btsco_rate = BTSCO_RATE_16KHZ;
+		msm_btsco_rate = BTSCO_RATE_8KHZ;
 		break;
 	case 1:
 		msm_btsco_rate = BTSCO_RATE_16KHZ;
 		break;
 	default:
-		msm_btsco_rate = BTSCO_RATE_16KHZ;
+		msm_btsco_rate = BTSCO_RATE_8KHZ;
 		break;
 	}
 	pr_debug("%s: msm_btsco_rate = %d\n", __func__,
@@ -1636,8 +1636,6 @@ static int msm_slim_0_tx_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 			SNDRV_PCM_HW_PARAM_CHANNELS);
 
 	pr_debug("%s()\n", __func__);
-		param_set_mask(params, SNDRV_PCM_HW_PARAM_FORMAT,
-		SNDRV_PCM_FORMAT_S16_LE);
 	rate->min = rate->max = 48000;
 	channels->min = channels->max = msm_slim_0_tx_ch;
 
