@@ -1203,7 +1203,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 
 	
 //gboost
-printk("gcount=%d\n", g_count);
+//printk("gcount=%d\n", g_count);
 if (graphics_boost == 0 || g_count > 30) {
 
 	if (max_load_freq > dbs_tuners_ins.up_threshold * policy->cur) {
@@ -1401,6 +1401,9 @@ static void do_dbs_timer(struct work_struct *work)
 		} else {
 			delay = usecs_to_jiffies(dbs_tuners_ins.sampling_rate
 				* dbs_info->rate_mult);
+
+			if (num_online_cpus() > 1)
+				delay -= jiffies % delay;
 		}
 	} else {
 		if (input_event_boosted())
