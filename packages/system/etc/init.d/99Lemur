@@ -187,6 +187,24 @@ else
   echo DoubleTap2Wake disabled >> $LEMUR_LOGFILE;
 fi
 
+#Set GESTURES
+if [ "`grep GESTURES=1 $LEMUR_CONF`" ]; then
+  echo 1 > /sys/android_touch/wake_gestures;
+  echo Wake gestures enabled >> $LEMUR_LOGFILE;
+else
+  echo 0 > /sys/android_touch/wake_gestures;
+  echo Wake gestures disabled >> $LEMUR_LOGFILE;
+fi
+
+#Set SWEEPUP2WAKE
+if [ "`grep SU2W=1 $LEMUR_CONF`" ]; then
+  echo 1 > /sys/android_touch/sweepup2wake;
+  echo SweepUp2Wake enabled >> $LEMUR_LOGFILE;
+else
+  echo 0 > /sys/android_touch/sweepup2wake;
+  echo SweepUp2Wake disabled >> $LEMUR_LOGFILE;
+fi
+
 #Set LOGO2WAKE
 if [ "`grep LOGO2WAKE=1 $LEMUR_CONF`" ]; then
   echo 1 > /sys/android_touch/logo2wake;

@@ -22,6 +22,41 @@ else
   echo "BLN=0" >> $CONFIGFILE;
 fi
 
+#Wake Gestures
+GESTURES=`grep selected.0 /tmp/aroma/wg.prop | cut -d '=' -f2`
+echo -e "\n\n##### Wake Gestures Settings #####\n# 0 to disable wake gestures" >> $CONFIGFILE
+echo -e "# 1 to enable  wake gestures\n" >> $CONFIGFILE
+if [ $GESTURES = 1 ]; then
+  echo "GESTURES=1" >> $CONFIGFILE;
+else
+  echo "GESTURES=0" >> $CONFIGFILE;
+fi
+
+
+if [ -e /tmp/aroma/wgopt.prop ]; then
+
+#S2S
+S2S=`grep "item.0.1" /tmp/aroma/wgopt.prop | cut -d '=' -f2`
+echo -e "\n\n##### Sweep2Wake Settings #####\n# 0 to disable sweep2wake" >> $CONFIGFILE
+echo -e "# 1 to enable sweep2wake and sweep2sleep (default)\n# 2 to enable sweep2sleep and disable sweep2wake\n" >> $CONFIGFILE
+if [ $S2S = 1 ]; then
+  echo "SWEEP2WAKE=2" >> $CONFIGFILE;
+else
+  echo "SWEEP2WAKE=0" >> $CONFIGFILE;
+fi
+
+#Pocket detection
+POCKET=`grep "item.0.2" /tmp/aroma/wgopt.prop | cut -d '=' -f2`
+echo -e "\n\n##### Pocket Detection Settings #####\n# 0 to disable pocket detection" >> $CONFIGFILE
+echo -e "# 1 to enable pocket detection(default)\n" >> $CONFIGFILE
+if [ $POCKET = 1 ]; then
+  echo "POCKET=1" >> $CONFIGFILE;
+else
+  echo "POCKET=0" >> $CONFIGFILE;
+fi
+
+elif [ -e /tmp/aroma/sw.prop ]; then
+
 #S2W
 S2W=`grep "item.0.1" /tmp/aroma/sw.prop | cut -d '=' -f2`
 S2S=`grep "item.0.2" /tmp/aroma/sw.prop | cut -d '=' -f2`
@@ -33,6 +68,38 @@ elif [ $S2S = 1 ]; then
   echo "SWEEP2WAKE=2" >> $CONFIGFILE;
 else
   echo "SWEEP2WAKE=0" >> $CONFIGFILE;
+fi
+
+#Pocket detection
+POCKET=`grep "item.0.7" /tmp/aroma/sw.prop | cut -d '=' -f2`
+echo -e "\n\n##### Pocket Detection Settings #####\n# 0 to disable pocket detection" >> $CONFIGFILE
+echo -e "# 1 to enable pocket detection(default)\n" >> $CONFIGFILE
+if [ $POCKET = 1 ]; then
+  echo "POCKET=1" >> $CONFIGFILE;
+else
+  echo "POCKET=0" >> $CONFIGFILE;
+fi
+
+else
+
+echo -e "\n\n##### Sweep2Wake Settings #####\n# 0 to disable sweep2wake" >> $CONFIGFILE
+echo -e "# 1 to enable sweep2wake and sweep2sleep (default)\n# 2 to enable sweep2sleep and disable sweep2wake\n" >> $CONFIGFILE
+echo "SWEEP2WAKE=0" >> $CONFIGFILE;
+
+echo -e "\n\n##### Pocket Detection Settings #####\n# 0 to disable pocket detection" >> $CONFIGFILE
+echo -e "# 1 to enable pocket detection(default)\n" >> $CONFIGFILE
+echo "POCKET=0" >> $CONFIGFILE;
+
+fi
+
+#SU2W
+SU2W=`grep "item.0.3" /tmp/aroma/sw.prop | cut -d '=' -f2`
+echo -e "\n\n##### SweepUp2Wake Settings #####\n# 0 to disable SweepUp2Wake" >> $CONFIGFILE
+echo -e "# 1 to enable SweepUp2Wake\n" >> $CONFIGFILE
+if [ $SU2W = 1 ]; then
+  echo "SU2W=1" >> $CONFIGFILE;
+else
+  echo "SU2W=0" >> $CONFIGFILE;
 fi
 
 #DT2W
@@ -86,16 +153,6 @@ if [ $F2S = 1 ]; then
   echo "FLICK2SLEEP=1" >> $CONFIGFILE;
 else
   echo "FLICK2SLEEP=0" >> $CONFIGFILE;
-fi
-
-#Pocket detection
-POCKET=`grep "item.0.9" /tmp/aroma/sw.prop | cut -d '=' -f2`
-echo -e "\n\n##### Pocket Detection Settings #####\n# 0 to disable pocket detection" >> $CONFIGFILE
-echo -e "# 1 to enable pocket detection(default)\n" >> $CONFIGFILE
-if [ $POCKET = 1 ]; then
-  echo "POCKET=1" >> $CONFIGFILE;
-else
-  echo "POCKET=0" >> $CONFIGFILE;
 fi
 
 #VIBRATION
@@ -162,15 +219,6 @@ if [ $FSYNC = 1 ]; then
   echo "FSYNC=0" >> $CONFIGFILE;
 else
   echo "FSYNC=1" >> $CONFIGFILE;
-fi
-
-#Thermal Throttle
-THROTTLE=`grep "item.1.0" /tmp/aroma/mods.prop | cut -d '=' -f2`
-echo -e "\n\n##### Thermal Throttle #####\n# Y to enable (default)\n# N to disable\n" >> $CONFIGFILE
-if [ $THROTTLE = 1 ]; then
-  echo "THROTTLE=1" >> $CONFIGFILE;
-else
-  echo "THROTTLE=0" >> $CONFIGFILE;
 fi
 
 #GPU OC

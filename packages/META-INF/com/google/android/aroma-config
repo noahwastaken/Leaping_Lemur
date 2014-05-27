@@ -31,10 +31,10 @@
 # * AROMA Temporary Dir = /tmp/aroma/
 
 ini_set("rom_name",             "Leaping Lemur");
-ini_set("rom_version",          "Build #102");
+ini_set("rom_version",          "Build #115");
 ini_set("rom_author",           "Tal Noah");
 ini_set("rom_device",           "Sprint HTC One");
-ini_set("rom_date",             "May 18, 2014");
+ini_set("rom_date",             "May 26, 2014");
 
 ini_set("force_colorspace","rgba");
 ini_set("dp","6");
@@ -242,24 +242,42 @@ checkbox(
   "Enable USB fastcharge","",0,
   "Disable fsync","Faster fileystem performance, but risk of data loss",0,
   "Disable HTC color enhancement","truer color",0,
-  "Enable graphics boost","Better gaming performance",0,
+  "Enable graphics boost","Better gaming performance",1,
   "Disable HTC pnpmgr","HTC pnpmgr ensures smooth ui, recommend leaving it enabled",0,
   "Optimized Bionic Libraries","For GPE users only",0,
-  "Enable Thermal Throttle","SOC temperature limit toggle",0,
   "Enable exFAT support","",0
 );
   
+selectbox(
+  "Wake gesture settings","configure screen wake gestures","@personalize","wg.prop",
+  "Wake Gestures","Wake gestures support (requires Sense 6 Toolbox)",0,
+  "Traditional S2W/DT2W","Built into kernel, nothing else required",1,
+  "No screen wake gestures","",0
+);
+
+if file_getprop("/tmp/aroma/wg.prop","selected.0") == "1"
+then
 checkbox(
-  "Sleep/wake settings","Select the mods you want to install","@personalize","sw.prop",
-  "Sweep2Wake","Sweep across buttons to sleep/wake phone",0,
+  "Wake Gesture options","More options are available in Sense 6 Toolbox","@personalize","wgopt.prop",
+  "Sweep2Sleep","Sweep across buttons to sleep phone",1,
+  "Pocket detection","prevents accidental wakes",1
+);
+endif;
+
+if file_getprop("/tmp/aroma/wg.prop","selected.0") == "2"
+then
+checkbox(
+  "Sleep/wake options","Select the mods you want to install","@personalize","sw.prop",
+  "Sweep2Wake + Sweep2Sleep","Sweep across buttons to sleep/wake phone",1,
   "Sweep2Sleep Only","Sweep across buttons to sleep phone",0,
+  "SweepUp2Wake","Sweep up to wake phone",1,
   "DoubleTap2Wake","Double tap bottom of screen to wake phone",0,
-  "DoubleTap2Wake (fullscreen)","Double tap anywhere on screen to wake phone",0,
+  "DoubleTap2Wake (fullscreen)","Double tap anywhere on screen to wake phone",1,
   "Logo2Wake","Wake phone with long press of HTC logo",0,
   "Pick2Wake","Wake phone by picking up the phone while laying horizontally",0,
   "Flick2Wake","Wake phone by flicking your phone with your wrist",0,
   "Flick2Sleep","Put your phone to sleep by flicking your phone with your wrist",0,
-  "Pocket detection","Disables sleep/wake functions in pocket",0
+  "Pocket detection","prevents accidental wakes",1
 );
 
 if file_getprop("/tmp/aroma/sw.prop","item.0.1") == "1" && file_getprop("/tmp/aroma/sw.prop","item.0.2") == "1"
@@ -273,7 +291,7 @@ alert(
 back("1");
 endif;
 
-if file_getprop("/tmp/aroma/sw.prop","item.0.3") == "1" && file_getprop("/tmp/aroma/sw.prop","item.0.4") == "1"
+if file_getprop("/tmp/aroma/sw.prop","item.0.4") == "1" && file_getprop("/tmp/aroma/sw.prop","item.0.5") == "1"
 then 
 alert(
   "PLEASE NOTE:",
@@ -295,11 +313,12 @@ if file_getprop("/tmp/aroma/sw.prop","item.0.1") == "1" ||
   file_getprop("/tmp/aroma/sw.prop","item.0.9") == "1"
 then
 selectbox(
-  "Sleep/wake vibration settings","Set the amount of vibration for sweep2wake/logo2wake/doubletap2wake/flick2wake/pick2wake\n","@personalize","vibrate.prop",
+  "Sleep/wake vibration settings","Set the amount of vibration for sweep2wake/logo2wake/doubletap2wake\n","@personalize","vibrate.prop",
   "No vibration","",0,
   "Default vibration","",1,
   "Stronger vibration","",0
 );
+endif;
 endif;
 
 menubox(
