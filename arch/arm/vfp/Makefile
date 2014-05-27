@@ -7,7 +7,7 @@
 # ccflags-y := -DDEBUG
 # asflags-y := -DDEBUG
 
-KBUILD_AFLAGS  :=$(KBUILD_AFLAGS:-msoft-float=-Wa, -O3 -mcpu=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard -ffast-math -fsingle-precision-constant)
+KBUILD_AFLAGS	:=$(KBUILD_AFLAGS:-msoft-float=-Wa,-mfpu=neon-vfpv4 -mfloat-abi=hard)
 
 LDFLAGS		+=--no-warn-mismatch
 
