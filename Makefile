@@ -247,8 +247,8 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 
 HOSTCC       = $(CCACHE) gcc
 HOSTCXX      = $(CCACHE) g++
-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O3 -fomit-frame-pointer -fgcse-las
-HOSTCXXFLAGS = -O3 -fgcse-las
+HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -Ofast -fomit-frame-pointer -fgcse-las
+HOSTCXXFLAGS = -Ofast -fgcse-las
 
 # Decide whether to build built-in, modular, or both.
 # Normally, just do built-in.
@@ -353,13 +353,13 @@ CHECK		= sparse
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
-KERNELFLAGS	= -O3 -DNDEBUG -munaligned-access -fgcse-lm -fgcse-sm -fforce-addr -fsched-spec-load -mtune=cortex-a15 -mcpu=cortex-a15 -marm -mfpu=neon-vfpv4 -ftree-vectorize -mvectorize-with-neon-quad -funroll-loops -fpredictive-commoning -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -finline-functions -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-slp-vectorize -fvect-cost-model -ftree-partial-pre -fipa-cp-clone
+KERNELFLAGS	= -Ofast -DNDEBUG -munaligned-access -fgcse-lm -fgcse-sm -fforce-addr -fsched-spec-load -mtune=cortex-a15 -mcpu=cortex-a15 -marm -mfpu=neon-vfpv4 -ftree-vectorize -mvectorize-with-neon-quad -funroll-loops -fpredictive-commoning -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -finline-functions -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-slp-vectorize -fvect-cost-model -ftree-partial-pre -fipa-cp-clone
 MODFLAGS	= -DMODULE $(KERNELFLAGS)
 CFLAGS_MODULE   = $(MODFLAGS)
 AFLAGS_MODULE   = $(MODFLAGS)
 LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds
-CFLAGS_KERNEL	= $(KERNELFLAGS) -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
-AFLAGS_KERNEL	= $(KERNELFLAGS) -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+CFLAGS_KERNEL	= $(KERNELFLAGS) -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+AFLAGS_KERNEL	= $(KERNELFLAGS) -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
 # Use LINUXINCLUDE when you must reference the include/ directory.
@@ -369,7 +369,7 @@ LINUXINCLUDE    := -I$(srctree)/arch/$(hdr-arch)/include \
                    $(if $(KBUILD_SRC), -I$(srctree)/include) \
                    -include $(srctree)/include/linux/kconfig.h
 
-KBUILD_CPPFLAGS := -D__KERNEL__ -O3 -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+KBUILD_CPPFLAGS := -D__KERNEL__ -Ofast -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 
 KBUILD_CFLAGS   := -Wall -DNDEBUG -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
@@ -381,13 +381,13 @@ KBUILD_CFLAGS   := -Wall -DNDEBUG -Wundef -Wstrict-prototypes -Wno-trigraphs \
                    -Wno-unused-variable -mno-unaligned-access \
 		   -mtune=cortex-a15 -mfpu=neon-vfpv4 \
 		   -fpredictive-commoning -fgcse-after-reload -ftree-vectorize \
-		   -fsingle-precision-constant -pipe -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block \
+		   -fsingle-precision-constant -pipe -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block \
 		   -funswitch-loops 
-KBUILD_AFLAGS_KERNEL := -O3 -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
-KBUILD_CFLAGS_KERNEL := -O3 -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+KBUILD_AFLAGS_KERNEL := -Ofast -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+KBUILD_CFLAGS_KERNEL := -Ofast -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 KBUILD_AFLAGS   := -D__ASSEMBLY__
-KBUILD_AFLAGS_MODULE  := -DMODULE -O3 -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
-KBUILD_CFLAGS_MODULE  := -DMODULE -O3 -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -O3 -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+KBUILD_AFLAGS_MODULE  := -DMODULE -Ofast -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+KBUILD_CFLAGS_MODULE  := -DMODULE -Ofast -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 
 KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
 
@@ -582,7 +582,7 @@ ifdef CONFIG_CC_OPTIMIZE_DEFAULT
 KBUILD_CFLAGS	+= -O2
 endif
 ifdef CONFIG_CC_OPTIMIZE_ALOT
-KBUILD_CFLAGS	+= -O3
+KBUILD_CFLAGS	+= -Ofast
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
