@@ -1202,13 +1202,13 @@ static int msm_btsco_rate_put(struct snd_kcontrol *kcontrol,
 {
 	switch (ucontrol->value.integer.value[0]) {
 	case 0:
-		msm_btsco_rate = BTSCO_RATE_8KHZ;
+		msm_btsco_rate = BTSCO_RATE_16KHZ;
 		break;
 	case 1:
 		msm_btsco_rate = BTSCO_RATE_16KHZ;
 		break;
 	default:
-		msm_btsco_rate = BTSCO_RATE_8KHZ;
+		msm_btsco_rate = BTSCO_RATE_16KHZ;
 		break;
 	}
 	pr_debug("%s: msm_btsco_rate = %d\n", __func__,
