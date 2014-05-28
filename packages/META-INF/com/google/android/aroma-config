@@ -31,10 +31,10 @@
 # * AROMA Temporary Dir = /tmp/aroma/
 
 ini_set("rom_name",             "Leaping Lemur");
-ini_set("rom_version",          "Build #36");
+ini_set("rom_version",          "Build #40");
 ini_set("rom_author",           "Tal Noah");
 ini_set("rom_device",           "Sprint HTC One");
-ini_set("rom_date",             "Apr 18, 2014");
+ini_set("rom_date",             "Apr 24, 2014");
 
 ini_set("force_colorspace","rgba");
 ini_set("dp","6");
@@ -179,12 +179,8 @@ endif;
 selectbox(
   "Select CPU governor","\n","@personalize","cpugov.prop",
   "ondemand","(stock)",1,
-  "abyssplugv2","",0,
-  "asswax","",0,
   "badass","",0,
   "dancedance","",0,
-  "darkness","",0,
-  "HYPER","",0,
   "intellidemand","",0,
   "intelliactive","",0,
   "interactivex2","",0,
@@ -192,10 +188,7 @@ selectbox(
   "lionheart","",0,
   "ondemandplus","",0,
   "preservative","",0,
-  "smartass2","",0,
-  "smartassH3","",0,
   "smartmax","",0,
-  "savagedzen","",0,
   "wheatley","",0
 );
 

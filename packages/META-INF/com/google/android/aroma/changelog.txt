@@ -1,3 +1,11 @@
+[4/24/2014]
+-Squashed intelliplug and all related commits
+-Added bricked thermal replacing crpalmers solution
+-Added bricked mpdecision replacing htc's/qcom's solution
+-Remove flags in Aflags
+-Removed deprecated governors
+-Slim down kernel
+
 [4/18/2014]
 -Linux Version 3.4.87
 -Removed CPUQUIET Power Management

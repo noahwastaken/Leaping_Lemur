@@ -17,26 +17,6 @@ echo 384000 > /sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq;
 
 #CPU Governor settings
 if [ "`grep CPU_GOV=2 $LEMUR_CONF`" ]; then
-  echo abyssplugv2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  echo abyssplugv2 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  echo abyssplugv2 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  echo abyssplugv2 > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  echo abyssplugv2 CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=3 $LEMUR_CONF`" ]; then
-  echo asswax > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  echo asswax > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  echo asswax > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  echo asswax > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  echo asswax CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=4 $LEMUR_CONF`" ]; then
   echo badass > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo badass > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -46,7 +26,7 @@ elif [ "`grep CPU_GOV=4 $LEMUR_CONF`" ]; then
   echo badass > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   echo badass CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=5 $LEMUR_CONF`" ]; then
+elif [ "`grep CPU_GOV=3 $LEMUR_CONF`" ]; then
   echo dancedance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo dancedance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -56,27 +36,7 @@ elif [ "`grep CPU_GOV=5 $LEMUR_CONF`" ]; then
   echo dancedance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   echo dancedance CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=6 $LEMUR_CONF`" ]; then
-  echo darkness > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  echo darkness > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  echo darkness > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  echo darkness > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  echo darkness CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=7 $LEMUR_CONF`" ]; then
-  echo HYPER > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  echo HYPER > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  echo HYPER > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  echo HYPER > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  echo HYPER CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=8 $LEMUR_CONF`" ]; then
+elif [ "`grep CPU_GOV=4 $LEMUR_CONF`" ]; then
   echo intellidemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo intellidemand > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -86,7 +46,7 @@ elif [ "`grep CPU_GOV=8 $LEMUR_CONF`" ]; then
   echo intellidemand > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   echo intellidemand CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=9 $LEMUR_CONF`" ]; then
+elif [ "`grep CPU_GOV=5 $LEMUR_CONF`" ]; then
   echo intelliactive > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo intelliactive > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -96,7 +56,7 @@ elif [ "`grep CPU_GOV=9 $LEMUR_CONF`" ]; then
   echo intelliactive > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   echo intelliactive CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=10 $LEMUR_CONF`" ]; then
+elif [ "`grep CPU_GOV=6 $LEMUR_CONF`" ]; then
   echo interactivex2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo interactivex2 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -106,7 +66,7 @@ elif [ "`grep CPU_GOV=10 $LEMUR_CONF`" ]; then
   echo interactivex2 > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   echo interactivex2 CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=11 $LEMUR_CONF`" ]; then
+elif [ "`grep CPU_GOV=7 $LEMUR_CONF`" ]; then
   echo lagfree > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo lagfree > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -116,7 +76,7 @@ elif [ "`grep CPU_GOV=11 $LEMUR_CONF`" ]; then
   echo lagfree > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   echo lagfree CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=12 $LEMUR_CONF`" ]; then
+elif [ "`grep CPU_GOV=8 $LEMUR_CONF`" ]; then
   echo lionheart > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo lionheart > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -126,7 +86,7 @@ elif [ "`grep CPU_GOV=12 $LEMUR_CONF`" ]; then
   echo lionheart > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   echo lionheart CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=13 $LEMUR_CONF`" ]; then
+elif [ "`grep CPU_GOV=9 $LEMUR_CONF`" ]; then
   echo ondemandplus > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo ondemandplus > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -136,7 +96,7 @@ elif [ "`grep CPU_GOV=13 $LEMUR_CONF`" ]; then
   echo ondemandplus > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   echo ondemandplus CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=14 $LEMUR_CONF`" ]; then
+elif [ "`grep CPU_GOV=10 $LEMUR_CONF`" ]; then
   echo preservative > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo preservative > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -146,27 +106,7 @@ elif [ "`grep CPU_GOV=14 $LEMUR_CONF`" ]; then
   echo preservative > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   echo preservative CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=15 $LEMUR_CONF`" ]; then
-  echo smartass2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  echo smartass2 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  echo smartass2 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  echo smartass2 > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  echo smartass2 CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=16 $LEMUR_CONF`" ]; then
-  echo smartassH3 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  echo smartassH3 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  echo smartassH3 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  echo smartassH3 > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  echo smartassH3 CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=17 $LEMUR_CONF`" ]; then
+elif [ "`grep CPU_GOV=11 $LEMUR_CONF`" ]; then
   echo smartmax > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo smartmax > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -176,17 +116,7 @@ elif [ "`grep CPU_GOV=17 $LEMUR_CONF`" ]; then
   echo smartmax > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
   echo smartmax CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=18 $LEMUR_CONF`" ]; then
-  echo savagedzen > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  echo savagedzen > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
-  echo savagedzen > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-  echo savagedzen > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  chmod 444 /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
-  echo savagedzen CPU Governor >> $LEMUR_LOGFILE;
-elif [ "`grep CPU_GOV=19 $LEMUR_CONF`" ]; then
+elif [ "`grep CPU_GOV=12 $LEMUR_CONF`" ]; then
   echo wheatley > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
   echo wheatley > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
@@ -328,13 +258,13 @@ fi
 
 #thermal settings
 if [ "`grep THERM=1 $LEMUR_CONF`" ]; then
-  echo 58,64,75,85 > /sys/module/msm_thermal/parameters/limit_temp_degC;
+  echo 58,64,75,85 > /sys/kernel/msm_thermal/conf/limit_temp_degC;
   echo run cool >> $LEMUR_LOGFILE;
 elif [ "`grep THERM=2 $LEMUR_CONF`" ]; then
-  echo 54,60,75,85 > /sys/module/msm_thermal/parameters/limit_temp_degC;
+  echo 54,60,75,85 > /sys/kernel/msm_thermal/conf/limit_temp_degC;
   echo run extra cool >> $LEMUR_LOGFILE;
 elif [ "`grep THERM=3 $LEMUR_CONF`" ]; then
-  echo 66,71,75,85 > /sys/module/msm_thermal/parameters/limit_temp_degC;
+  echo 66,71,75,85 > /sys/kernel/msm_thermal/conf/limit_temp_degC;
   echo run hot >> $LEMUR_LOGFILE;
 fi
 
@@ -446,28 +376,28 @@ fi
 
 #mpdecision settings
 if [ "`grep MPDEC=1 $LEMUR_CONF`" ]; then
-  echo "0 2.0 3.1 4.5" > /sys/power/pnpmgr/hotplug/mp_nw;
-  echo "0 1.1 2.1 3.5" > /sys/power/pnpmgr/hotplug/mp_ns;
-  echo "0 140 140 140" > /sys/power/pnpmgr/hotplug/mp_tw;
+  echo "0 2.0 3.1 4.5" > /sys/kernel/msm_mpdecision/conf/mp_nw;
+  echo "0 1.1 2.1 3.5" > /sys/kernel/msm_mpdecision/conf/mp_ns;
+  echo "0 140 140 140" > /sys/kernel/msm_mpdecision/conf/mp_tw;
   echo Mpdecision battery >> $LEMUR_LOGFILE;
 elif [ "`grep MPDEC=2 $LEMUR_CONF`" ]; then
-  echo "0 1.9 2.5 3.5" > /sys/power/pnpmgr/hotplug/mp_nw;
-  echo "0 0.9 1.9 3.0" > /sys/power/pnpmgr/hotplug/mp_ns;
-  echo "0 90 90 90" > /sys/power/pnpmgr/hotplug/mp_tw;
+  echo "0 1.9 2.5 3.5" > /sys/kernel/msm_mpdecision/conf/mp_nw;
+  echo "0 0.9 1.9 3.0" > /sys/kernel/msm_mpdecision/conf/mp_ns;
+  echo "0 90 90 90" > /sys/kernel/msm_mpdecision/conf/mp_tw;
   echo Mpdecision performance >> $LEMUR_LOGFILE;
 fi
 
 
 #mpdecision settings
 if [ "`grep MPDEC=1 $LEMUR_CONF`" ]; then
-  echo "0 2.0 3.1 4.5" > /sys/power/pnpmgr/hotplug/mp_nw;
-  echo "0 1.1 2.1 3.5" > /sys/power/pnpmgr/hotplug/mp_ns;
-  echo "0 140 140 140" > /sys/power/pnpmgr/hotplug/mp_tw;
+  echo "0 2.0 3.1 4.5" > /sys/kernel/msm_mpdecision/conf/mp_nw;
+  echo "0 1.1 2.1 3.5" > /sys/kernel/msm_mpdecision/conf/mp_ns;
+  echo "0 140 140 140" > /sys/kernel/msm_mpdecision/conf/mp_tw;
   echo Mpdecision battery >> $LEMUR_LOGFILE;
 elif [ "`grep MPDEC=2 $LEMUR_CONF`" ]; then
-  echo "0 1.9 2.5 3.5" > /sys/power/pnpmgr/hotplug/mp_nw;
-  echo "0 0.9 1.9 3.0" > /sys/power/pnpmgr/hotplug/mp_ns;
-  echo "0 90 90 90" > /sys/power/pnpmgr/hotplug/mp_tw;
+  echo "0 1.9 2.5 3.5" > /sys/kernel/msm_mpdecision/conf/mp_nw;
+  echo "0 0.9 1.9 3.0" > /sys/kernel/msm_mpdecision/conf/mp_ns;
+  echo "0 90 90 90" > /sys/kernel/msm_mpdecision/conf/mp_tw;
   echo Mpdecision performance >> $LEMUR_LOGFILE;
 fi
 
