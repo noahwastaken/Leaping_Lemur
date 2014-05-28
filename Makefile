@@ -357,8 +357,11 @@ KERNELFLAGS	= -Ofast -DNDEBUG -munaligned-access -fgcse-lm -fgcse-sm -fforce-add
 MODFLAGS	= -DMODULE $(KERNELFLAGS)
 CFLAGS_MODULE   = $(MODFLAGS)
 AFLAGS_MODULE   = $(MODFLAGS)
-LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds
+LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds -flto
 CFLAGS_KERNEL	= $(KERNELFLAGS) -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+ifdef CONFIG_CC_LINK_TIME_OPTIMIZATION
+CFLAGS_KERNEL	+= -flto -fno-toplevel-reorder -fuse-linker-plugin
+endif
 AFLAGS_KERNEL	= $(KERNELFLAGS) -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
@@ -583,6 +586,9 @@ KBUILD_CFLAGS	+= -O2
 endif
 ifdef CONFIG_CC_OPTIMIZE_ALOT
 KBUILD_CFLAGS	+= -Ofast
+endif
+ifdef CONFIG_CC_LINK_TIME_OPTIMIZATION
+KBUILD_CFLAGS	+= -flto -fno-toplevel-reorder -fuse-linker-plugin
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
