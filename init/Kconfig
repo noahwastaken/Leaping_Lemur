@@ -977,13 +977,6 @@ config CC_GRAPHITE_OPTIMIZATION
 
 	  If unsure, say N.
 
-config CC_LINK_TIME_OPTIMIZATION
-	bool "Enable link-time optimization"
-	help
-	  Enabling this option will turn on link time optimization.
-
-	  If unsure, say N.
-
 config SYSCTL
 	bool
 

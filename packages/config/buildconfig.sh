@@ -189,9 +189,9 @@ fi
 GBOOST=`grep "item.0.5" /tmp/aroma/mods.prop | cut -d '=' -f2`
 echo -e "\n\n##### Graphics Boost Settings ######\n# 1 to enable\n# 0 to disable\n" >> $CONFIGFILE
 if [ $GBOOST = 0 ]; then
-  echo "GBOOST=0" >> $CONFIGFILE;
-else
   echo "GBOOST=1" >> $CONFIGFILE;
+else
+  echo "GBOOST=0" >> $CONFIGFILE;
 fi
 
 #exFAT module
@@ -216,9 +216,9 @@ fi
 FSYNC=`grep "item.0.9" /tmp/aroma/mods.prop | cut -d '=' -f2`
 echo -e "\n\n##### fsync Settings ######\n# 1 to enable (default)\n# 0 to disable\n" >> $CONFIGFILE
 if [ $FSYNC = 1 ]; then
-  echo "FSYNC=0" >> $CONFIGFILE;
-else
   echo "FSYNC=1" >> $CONFIGFILE;
+else
+  echo "FSYNC=0" >> $CONFIGFILE;
 fi
 
 #GPU OC
