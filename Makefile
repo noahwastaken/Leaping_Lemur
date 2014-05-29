@@ -353,16 +353,19 @@ CHECK		= sparse
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
-KERNELFLAGS	= -Ofast -DNDEBUG -munaligned-access -fgcse-lm -fgcse-sm -fforce-addr -fsched-spec-load -mtune=cortex-a15 -mcpu=cortex-a15 -marm -mfpu=neon-vfpv4 -ftree-vectorize -mvectorize-with-neon-quad -funroll-loops -fpredictive-commoning -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -finline-functions -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-slp-vectorize -fvect-cost-model -ftree-partial-pre -fipa-cp-clone
+KERNELFLAGS	= -Ofast -DNDEBUG -munaligned-access -fgcse-lm -fgcse-sm -fforce-addr -fsched-spec-load -mtune=cortex-a15 -mcpu=cortex-a15 -marm -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -funroll-loops -fpredictive-commoning -fgcse-after-reload -ffast-math -fsingle-precision-constant -finline-functions -funswitch-loops
 MODFLAGS	= -DMODULE $(KERNELFLAGS)
 CFLAGS_MODULE   = $(MODFLAGS)
 AFLAGS_MODULE   = $(MODFLAGS)
 LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds -flto
-CFLAGS_KERNEL	= $(KERNELFLAGS) -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+CFLAGS_KERNEL	= $(KERNELFLAGS)
+ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
+CFLAGS_KERNEL	+= -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+endif
 ifdef CONFIG_CC_LINK_TIME_OPTIMIZATION
 CFLAGS_KERNEL	+= -flto -fno-toplevel-reorder -fuse-linker-plugin
 endif
-AFLAGS_KERNEL	= $(KERNELFLAGS) -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+AFLAGS_KERNEL	= $(KERNELFLAGS)
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
 # Use LINUXINCLUDE when you must reference the include/ directory.
@@ -372,7 +375,7 @@ LINUXINCLUDE    := -I$(srctree)/arch/$(hdr-arch)/include \
                    $(if $(KBUILD_SRC), -I$(srctree)/include) \
                    -include $(srctree)/include/linux/kconfig.h
 
-KBUILD_CPPFLAGS := -D__KERNEL__ -Ofast -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+KBUILD_CPPFLAGS := -D__KERNEL__
 
 KBUILD_CFLAGS   := -Wall -DNDEBUG -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
@@ -383,15 +386,15 @@ KBUILD_CFLAGS   := -Wall -DNDEBUG -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-delete-null-pointer-checks \
                    -Wno-unused-variable -mno-unaligned-access \
 		   -mtune=cortex-a15 -mfpu=neon-vfpv4 \
-		   -fpredictive-commoning -fgcse-after-reload -ftree-vectorize \
-		   -fsingle-precision-constant -pipe -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block \
-		   -funswitch-loops 
-KBUILD_AFLAGS_KERNEL := -Ofast -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
-KBUILD_CFLAGS_KERNEL := -Ofast -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
-KBUILD_AFLAGS   := -D__ASSEMBLY__
-KBUILD_AFLAGS_MODULE  := -DMODULE -Ofast -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
-KBUILD_CFLAGS_MODULE  := -DMODULE -Ofast -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -ftree-loop-distribution -ftree-parallelize-loops=4 -mtune=cortex-a15 -mfpu=neon-vfpv4 -ftree-vectorize -funroll-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions -Ofast -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+		   -fpredictive-commoning -fgcse-after-reload \
+		   -ffast-math -fsingle-precision-constant \
+                   -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr
 
+KBUILD_AFLAGS_KERNEL := $(KERNELFLAGS)
+KBUILD_CFLAGS_KERNEL := $(KERNELFLAGS)
+KBUILD_AFLAGS   := -D__ASSEMBLY__
+KBUILD_AFLAGS_MODULE  := $(MODFLAGS)
+KBUILD_CFLAGS_MODULE  := $(MODFLAGS)
 KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
 
 # Read KERNELRELEASE from include/config/kernel.release (if it exists)
@@ -584,8 +587,14 @@ endif
 ifdef CONFIG_CC_OPTIMIZE_DEFAULT
 KBUILD_CFLAGS	+= -O2
 endif
-ifdef CONFIG_CC_OPTIMIZE_ALOT
-KBUILD_CFLAGS	+= -Ofast
+ifdef CONFIG_CC_OPTIMIZE_MORE
+KBUILD_CFLAGS += -O3 -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-tree-vectorize -fno-inline-functions
+endif
+ifdef CONFIG_CC_OPTIMIZE_FAST
+KBUILD_CFLAGS += -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-tree-vectorize -fno-inline-functions
+endif
+ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
+KBUILD_CFLAGS	+= -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 endif
 ifdef CONFIG_CC_LINK_TIME_OPTIMIZATION
 KBUILD_CFLAGS	+= -flto -fno-toplevel-reorder -fuse-linker-plugin
