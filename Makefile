@@ -362,9 +362,6 @@ CFLAGS_KERNEL	= $(KERNELFLAGS)
 ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
 CFLAGS_KERNEL	+= -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 endif
-ifdef CONFIG_CC_LINK_TIME_OPTIMIZATION
-CFLAGS_KERNEL	+= -flto -fno-toplevel-reorder -fuse-linker-plugin
-endif
 AFLAGS_KERNEL	= $(KERNELFLAGS)
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
@@ -385,7 +382,7 @@ KBUILD_CFLAGS   := -Wall -DNDEBUG -Wundef -Wstrict-prototypes -Wno-trigraphs \
                    -Wno-maybe-uninitialized -Wno-uninitialized \
 		   -fno-delete-null-pointer-checks \
                    -Wno-unused-variable -mno-unaligned-access \
-		   -mtune=cortex-a15 -mfpu=neon-vfpv4 \
+		   -mtune=cortex-a15 -mcpu=cortex-a15 -mfpu=neon \
 		   -fpredictive-commoning -fgcse-after-reload \
 		   -ffast-math -fsingle-precision-constant \
                    -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr
@@ -395,7 +392,7 @@ KBUILD_CFLAGS_KERNEL := $(KERNELFLAGS)
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_AFLAGS_MODULE  := $(MODFLAGS)
 KBUILD_CFLAGS_MODULE  := $(MODFLAGS)
-KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
+KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds -flto
 
 # Read KERNELRELEASE from include/config/kernel.release (if it exists)
 KERNELRELEASE = $(shell cat include/config/kernel.release 2> /dev/null)
@@ -594,13 +591,11 @@ ifdef CONFIG_CC_OPTIMIZE_FAST
 KBUILD_CFLAGS += -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-tree-vectorize -fno-inline-functions
 endif
 ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
-KBUILD_CFLAGS	+= -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
-endif
-ifdef CONFIG_CC_LINK_TIME_OPTIMIZATION
-KBUILD_CFLAGS	+= -flto -fno-toplevel-reorder -fuse-linker-plugin
+KBUILD_CFLAGS	+= -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -fno-inline-functions
 endif
 
-include $(srctree)/arch/$(SRCARCH)/Makefile
+include $(srctree)/arch/
+$(SRCARCH)/Makefile
 
 ifneq ($(CONFIG_FRAME_WARN),0)
 KBUILD_CFLAGS += $(call cc-option,-Wframe-larger-than=${CONFIG_FRAME_WARN})
