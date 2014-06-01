@@ -21,14 +21,14 @@ fi
 
 # Find the directories to log
 echo"";echo"";echo""
-echo "AK CHANGELOG -------------------------------------------------------------------------"
+echo "Kernel CHANGELOG -------------------------------------------------------------------------"
 echo""
 find $rdir -name .git | sed 's/\/.git//g' | sed 'N;$!P;$!D;$d' | while read line
 do
 cd $line
     # Test to see if the repo needs to have a changelog written.
     log=$(git log --pretty="%an - %s" --no-merges --since=$sdate --date-order)
-    project="AK KERNEL"
+    project="Leaping_Lemur"
     if [ -z "$log" ]; then
     echo " >>> Nothing updated on $project changelog, skipping ..."
     else
