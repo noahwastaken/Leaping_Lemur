@@ -61,7 +61,9 @@ export SUBARCH=arm
  
 # remove backup files
 find ./ -name '*~' | xargs rm
-# rm compile.log
+
+#Compile Log
+make >& error.log
 
 # make kernel
 make 'lemur_defconfig'
