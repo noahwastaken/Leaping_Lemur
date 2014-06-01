@@ -360,7 +360,7 @@ AFLAGS_MODULE   = $(MODFLAGS)
 LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds -flto
 CFLAGS_KERNEL	= $(KERNELFLAGS)
 ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
-CFLAGS_KERNEL	+= -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+CFLAGS_KERNEL	+= -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block -floop-flattern
 endif
 AFLAGS_KERNEL	= $(KERNELFLAGS)
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
@@ -591,7 +591,7 @@ ifdef CONFIG_CC_OPTIMIZE_FAST
 KBUILD_CFLAGS += -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-tree-vectorize -fno-inline-functions
 endif
 ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
-KBUILD_CFLAGS	+= -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -fno-inline-functions
+KBUILD_CFLAGS += -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block -floop-flattern
 endif
 
 include $(srctree)/arch/
