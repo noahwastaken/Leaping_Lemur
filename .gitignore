@@ -93,3 +93,12 @@ GTAGS
 modules
 stock
 \#*#
+
+#out files
+*.BACKUP
+*.REMOTE
+*.BASE
+*.LOCAL
+*hz.bc
+*/out
+*~
